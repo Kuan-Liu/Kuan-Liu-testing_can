@@ -67,7 +67,7 @@ YT                          3                 412                102     517    
   - **Among the 3 provinces that reported pending tests (Quebec, Ontario and Prince Edward Island), Quebec has the highest proportion of positive tests (4.5%).**
   - **Among the 4 provinces that reported negative tests but not tests awaiting for results (Alberta, New Brunswick, Newfoundland and Labrador and Nova Scotia), Newfoundland and Labrador has the highest proportion of positive tests (5.5%). This can be interpreted as for every 100 tests completed (with known results) in Newfoundland and Labrador, we expect around 5 to 6 of them to be postive.**
   
-![](C:\Users\kuan liu\Dropbox (Personal)\STAT_consulting\Bayesiantest\Kuan-Liu-testing_can\Kuan-Liu-testing_can\docs\index_files/figure-html/unnamed-chunk-2-1.png)<!-- -->
+![](C:\Users\KUANLI~1\DROPBO~1\STAT_C~1\BAYESI~1\KUAN-L~1\KUAN-L~1\docs\INDEX_~1/figure-html/unnamed-chunk-2-1.png)<!-- -->
 
 ##### Footnote: For provinces that don't report pending cases, we will assume a binary testing status (postive or negative).
 
@@ -79,16 +79,16 @@ YT                          3                 412                102     517    
   - **Alberta, British Columbia and Quebec also rank high among the 10 provinces by the total number of tests conducted per 10,000 population. It seems Ontario is falling slight behind the above three provinces on the testing capacity per capita. **
   - **Despite having low numbers of cumulative tests, the three territories demonstrate above national average testing capacity per capita.**
   
-![](C:\Users\kuan liu\Dropbox (Personal)\STAT_consulting\Bayesiantest\Kuan-Liu-testing_can\Kuan-Liu-testing_can\docs\index_files/figure-html/unnamed-chunk-3-1.png)<!-- -->
+![](C:\Users\KUANLI~1\DROPBO~1\STAT_C~1\BAYESI~1\KUAN-L~1\KUAN-L~1\docs\INDEX_~1/figure-html/unnamed-chunk-3-1.png)<!-- -->
 
-![](C:\Users\kuan liu\Dropbox (Personal)\STAT_consulting\Bayesiantest\Kuan-Liu-testing_can\Kuan-Liu-testing_can\docs\index_files/figure-html/unnamed-chunk-4-1.png)<!-- -->
+![](C:\Users\KUANLI~1\DROPBO~1\STAT_C~1\BAYESI~1\KUAN-L~1\KUAN-L~1\docs\INDEX_~1/figure-html/unnamed-chunk-4-1.png)<!-- -->
 
 
 ## Cumulative tests by territory
 
-![](C:\Users\kuan liu\Dropbox (Personal)\STAT_consulting\Bayesiantest\Kuan-Liu-testing_can\Kuan-Liu-testing_can\docs\index_files/figure-html/unnamed-chunk-5-1.png)<!-- -->
+![](C:\Users\KUANLI~1\DROPBO~1\STAT_C~1\BAYESI~1\KUAN-L~1\KUAN-L~1\docs\INDEX_~1/figure-html/unnamed-chunk-5-1.png)<!-- -->
 
-![](C:\Users\kuan liu\Dropbox (Personal)\STAT_consulting\Bayesiantest\Kuan-Liu-testing_can\Kuan-Liu-testing_can\docs\index_files/figure-html/unnamed-chunk-6-1.png)<!-- -->
+![](C:\Users\KUANLI~1\DROPBO~1\STAT_C~1\BAYESI~1\KUAN-L~1\KUAN-L~1\docs\INDEX_~1/figure-html/unnamed-chunk-6-1.png)<!-- -->
 
 
 ## Important jurisdiction-specific dates
