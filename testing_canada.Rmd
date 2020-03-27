@@ -106,6 +106,8 @@ ggplot(testprop_plot, aes(x = province, y = value, fill = variable, label = valu
   
 ```{r echo=FALSE}
 testing_cum <- read.table("C:/Users/kuan liu/Dropbox (Personal)/STAT_consulting/Bayesiantest/testing_cumulative.txt", header=TRUE, sep="\t")
+#testing_cum <- read.table("testing_cumulative.txt", header=TRUE, sep="\t")
+
 names(testing_cum)<-c("dateformate","Province","cumulative","population")
 testing_cum$dateformate<-chron(as.character(testing_cum$dateformate),format="d-m-y",out.format="month-d-y")
 testing_cum$dateformate<-as.Date(testing_cum$dateformate)
@@ -113,6 +115,11 @@ testing_cum2<-subset(testing_cum, Province %in% c("AB","BC","MB","NB","NL","NS",
 
 testprop_cum<-data.frame(testing_cum[,1:2],round(testing_cum[,3]/testing_cum[,4]*10000,1))
 names(testprop_cum)<-c("dateformate","Province","cumulative_p")
+
+library(forcats)
+testprop_cum <- mutate(testprop_cum, fct_relevel())
+data %>%
+  mutate(name = fct_reorder(name, val))
 
 ggplot(testing_cum2, aes(x=dateformate, y=cumulative, colour=Province)) +
 geom_line(size = 1)+
