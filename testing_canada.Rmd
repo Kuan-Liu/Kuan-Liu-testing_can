@@ -5,7 +5,10 @@ knit: (function(input_file, encoding) {
   rmarkdown::render(input_file,
  encoding=encoding,
  output_file=file.path(dirname(input_file), out_dir, 'index.html'))})
-author: "Kuan Liu, kuan.liu@mail.utoronto.ca"
+author: 
+- "Kuan Liu, kuan.liu@mail.utoronto.ca"
+- "Alexandra Bushby, alex.bushby@mail.utoronto.ca"
+
 output:
   html_document:
     keep_md: true
@@ -17,6 +20,8 @@ output:
 **Date Created:** 2020-03-25
 
 **Date Updated:** `r Sys.Date()`
+
+**Code Avaliable at** https://github.com/Kuan-Liu/Kuan-Liu-testing_can
 
 ```{r setup, echo=FALSE, results='none', message = FALSE, warning = FALSE}
 knitr::opts_chunk$set(message = FALSE, warning = FALSE)
@@ -80,7 +85,7 @@ testprop_plot<-melt(testprop, id=c("province"))
 
 ggplot(testprop_plot, aes(x = province, y = value, fill = variable, label = value)) +
   geom_bar(stat = "identity",width = 0.5, colour="black") +
-  geom_text(size = 3, position = position_stack(vjust = 0.5),vjust=-1.2, na.rm=TRUE) + coord_flip() +
+  geom_text(size = 3, position = position_stack(vjust = 0.5),vjust=-1, na.rm=TRUE) + coord_flip() +
   scale_y_continuous(limits = c(0, 100))+
   scale_fill_manual(values = c("grey","springgreen2","red2"),name = "Test status", 
                     labels = c("Pending", "Negative", "Positive"))+
