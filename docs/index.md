@@ -5,7 +5,10 @@ knit: (function(input_file, encoding) {
   rmarkdown::render(input_file,
  encoding=encoding,
  output_file=file.path(dirname(input_file), out_dir, 'index.html'))})
-author: "Kuan Liu, kuan.liu@mail.utoronto.ca"
+author: 
+- "Kuan Liu, kuan.liu@mail.utoronto.ca"
+- "Alexandra Bushby, alex.bushby@mail.utoronto.ca"
+
 output:
   html_document:
     keep_md: true
@@ -17,6 +20,8 @@ output:
 **Date Created:** 2020-03-25
 
 **Date Updated:** 2020-03-27
+
+**Code Avaliable at** https://github.com/Kuan-Liu/Kuan-Liu-testing_can
 
 
 
