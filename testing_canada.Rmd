@@ -45,11 +45,11 @@ Data used in this repostory are extracted from the data speardsheet posted by th
 
 ## Nation-wide total number of tests to date
 
-As of March 27, 2020 (11 am EDT), the total number of patients tested in Canada is 164,564 and the total number of patients tested per 10,000 population in Canada is around 44.
+As of March 27, 2020 (10 pm EDT), the total number of patients tested in Canada is 170,644 and the total number of patients tested per 10,000 population in Canada is around 45.
 
-  - the total number of patients tested positive is 4,285 (2.6%)
-  - the total number of patients tested negative is 147,405 (89.6%)
-  - the rest 12,874 patients (7.8%) are likely under investigation waiting for test results, detailed information is not available.
+  - the total number of patients tested positive is 4,516 (2.6%)
+  - the total number of patients tested negative is 153,735 (90.1%)
+  - the rest 12,393 patients (7.3%) are likely under investigation waiting for test results, detailed information is not available.
 
 (Data source: https://www.canada.ca/en/public-health/services/diseases/2019-novel-coronavirus-infection.html). 
 
@@ -57,7 +57,7 @@ As of March 27, 2020 (11 am EDT), the total number of patients tested in Canada 
 
 - **Highlights**
   - **Alberta, British Columbia and Saskatchewan are the top three provinces ranking by the number of tests per 10,000 population.**
-  - **Quebec has rapidly increased their testing capacity. The total number of tests per 10,000 population has increased to 49 as of Mar 27, 2020 comparing to 37 on Mar 25, 2020.**
+  - **Quebec has rapidly increased its testing capacity. The total number of tests per 10,000 population has increased to 49 as of Mar 27, 2020 comparing to 37 on Mar 25, 2020.**
   - **Northwest territories and Yukon reported over 100 tests per 10,000 population, highest in Canada.**
   - **Only 3 provinces, Ontario, Quebec and Prince Edward Island, reported the number of tests pending results. There appears to be a back log of test reporting in Ontario. However the back log in Ontario is observed to be decreasing. The proportion of pending tests in Ontario on Mar 27, 2020 is 24.6% comparing to the same proportion on Mar 25, 2020 at 29.4%.**
   
@@ -66,7 +66,15 @@ testing_todate <- read.table("C:/Users/kuan liu/Dropbox (Personal)/STAT_consulti
 
 names(testing_todate)[1:7]<-c("Province","Reported Positive","Reported Negative","Reported Pending","Total","Est. Population","Total per 10,000 people")
 
-kable(testing_todate[,1:7], caption = "Reported testing data province and territory, public data accessed online as of March 27, 2020 (8 pm EDT). Reported positive tests include resolved and deceased cases.")
+testing_todate_p<-testing_todate[testing_todate$Province %in% c("AB","BC","MB","NB","NL","NS","ON","PEI","QC","SK"),]
+testing_todate_t<-testing_todate[testing_todate$Province %in% c("NWT","YT","NU"),]
+
+testing_todate_p<-testing_todate_p[order(testing_todate_p$`Total per 10,000 people`, decreasing = TRUE),]
+testing_todate_t<-testing_todate_t[order(testing_todate_t$`Total per 10,000 people`, decreasing = TRUE),]
+
+testing_todate<-rbind(testing_todate_p,testing_todate_t)
+
+kable(testing_todate[,1:7], caption = "Reported testing data province and territory, public data accessed online as of March 27, 2020 (8 pm EDT). Reported positive tests include resolved and deceased cases.", row.names = FALSE)
 ```
 
 ###### Footnote: It's likely individuals may have been tested more than once. We are collecting publicly avaliable information online to best match patients with testing numbers. Unfortunately, detailed information is not always avaiable, so please read these data with caution.
