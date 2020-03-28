@@ -129,6 +129,7 @@ ggplot(testprop_plot, aes(x = province, y = value, fill = variable, label = valu
   
 ```{r echo=FALSE}
 testing_cum <- read.table("C:/Users/kuan liu/Dropbox (Personal)/STAT_consulting/Bayesiantest/Kuan-Liu-testing_can/Kuan-Liu-testing_can/testing_cumulative.txt", header=TRUE, sep="\t")
+# testing_cum <- read.table("testing_cumulative.txt", header=TRUE, sep="\t")
 names(testing_cum)<-c("dateformate","Province","cumulative","population")
 testing_cum$dateformate<-chron(as.character(testing_cum$dateformate),format="d-m-y",out.format="month-d-y")
 testing_cum$dateformate<-as.Date(testing_cum$dateformate)
