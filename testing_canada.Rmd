@@ -24,7 +24,7 @@ output:
 **Code Avaliable at** https://github.com/Kuan-Liu/Kuan-Liu-testing_can
 
 ```{r setup, echo=FALSE, results='none', message = FALSE, warning = FALSE}
-knitr::opts_chunk$set(message = FALSE, warning = FALSE)
+knitr::opts_chunk$set(message = FALSE, warning = FALSE, fig.align = "center",fig.height = 6.5, fig.width = 8.5)
 options(knitr.kable.NA = '-')
 ### Here, I'm using packman package to load packages if not currently available 
 require(ggplot2)
@@ -34,10 +34,10 @@ library("chron")
 ```
 
 
-**From the authors: Thank you for your interest in our work! We are constantly working to improve this website and all comments and feedbacks are welcome.**
+**From the authors: Thank you for your interest in our work! We are constantly working to improve this website and all comments and feedbacks are welcome. For most accurate and reliable Canadian COVID-19 epidemiology data, please visit Public Health Agency of Canada COVID-19 report site at https://www.canada.ca/en/public-health/services/diseases/2019-novel-coronavirus-infection.html (Full PDF report available).**
 
 ## Acknowledgement
-Data used in this repostory are extracted from the data speardsheet posted by the COVID-19 Canada Open Data Working Group (https://github.com/ishaberry/Covid19Canada). This working group, lead by Isha Berry and Jean-Paul R. Soucy from Dalla Lana School of Public Health, Unviersity of Toronto, has created an interactive dashboard on Canadian COVID-19 epidemiology data. I direct readers to visit the dashboard site at https://art-bd.shinyapps.io/covid19canada/.
+Data used in this repostory are extracted from the data speardsheet posted by the COVID-19 Canada Open Data Working Group (https://github.com/ishaberry/Covid19Canada). This working group, lead by Isha Berry and Jean-Paul R. Soucy from Dalla Lana School of Public Health, Unviersity of Toronto, has created an interactive dashboard on Canadian COVID-19 epidemiology data. We direct readers to visit the dashboard at https://art-bd.shinyapps.io/covid19canada/.
 
 ## Objectives and key messages
  - Providing information on testing capacity and trend overtime in Canada to **identify gaps and needs to increase testing capacity**.
@@ -45,13 +45,11 @@ Data used in this repostory are extracted from the data speardsheet posted by th
 
 ## Nation-wide total number of tests to date
 
-As of March 27, 2020 (10 pm EDT), the total number of patients tested in Canada is 170,644 and the total number of patients tested per 100,000 population in Canada is around 454.
+As of March 27, 2020 (10 pm EDT), the total number of patients tested in Canada is **170,644** and the total number of patients tested per 100,000 population in Canada is around **454**.
 
-  - the total number of patients tested positive is 4,516 (2.6%)
-  - the total number of patients tested negative is 153,735 (90.1%)
-  - the rest 12,393 patients (7.3%) are likely under investigation waiting for test results, detailed information is not available.
-
-(Data source: https://www.canada.ca/en/public-health/services/diseases/2019-novel-coronavirus-infection.html). 
+  - the total number of patients tested positive is **4,516 (2.6%)**
+  - the total number of patients tested negative is **153,735 (90.1%)**
+  - the rest **12,393 (7.3%)** patients are likely under investigation waiting for test results, detailed information is not available.
 
 ## Total number of tests to date by province and territory
 
@@ -93,6 +91,7 @@ library("tmap")
 library("tmaptools")
 library("leaflet")
 library("rgdal")
+# library("shinyjs")
 
 mapstat<-read.table("C:/Users/kuan liu/Dropbox (Personal)/STAT_consulting/Bayesiantest/Kuan-Liu-testing_can/Kuan-Liu-testing_can/testing_mapsdata.txt", header = TRUE, sep="\t")
 canada_prov <- readOGR(dsn = "C:/Users/kuan liu/Dropbox (Personal)/STAT_consulting/Bayesiantest/Kuan-Liu-testing_can/Kuan-Liu-testing_can",
@@ -100,14 +99,20 @@ canada_prov <- readOGR(dsn = "C:/Users/kuan liu/Dropbox (Personal)/STAT_consulti
 canada_prov$id<-c(24, 12, 47, 48, 10, 59, 13, 11, 60, 46, 35, 62, 61)
 testing_data<-merge(canada_prov, mapstat, by="id")
 
-map_test_p = tm_shape(testing_data)+tm_polygons(col="test_pop",style = "cont", title="")+tm_layout(title="Tests per 100,000", title.size = 1,title.position=c("left","bottom"),legend.position = c("right","top"))
-map_case_p = tm_shape(testing_data)+tm_polygons(col="case_pop",style = "cont", title=" ")+tm_layout(title="Cases per 100,000", title.size = 1,title.position=c("left","bottom"),legend.position = c("right","top"))
-# tmap_arrange(map_test_p, map_case_p,nrow=1)
+map_test = tm_shape(testing_data)+tm_polygons(col="test",breaks=c(0,1000,5000,10000,40000,50000),labels = c("<1000", "1000-5000", "5001-10000","10001-40000",">40000"),title=" ",palette ="YlOrRd")+tm_layout(title="Tests", title.size = 1,title.position=c("left","bottom"),legend.position = c("right","top"))
 
-map_test = tm_shape(testing_data)+tm_polygons(col="test",style = "cont", title=" ")+tm_layout(title="Tests", title.size = 1,title.position=c("left","bottom"),legend.position = c("right","top"))
-map_case = tm_shape(testing_data)+tm_polygons(col="case",style = "cont", title=" ")+tm_layout(title="Cases", title.size = 1,title.position=c("left","bottom"),legend.position = c("right","top"))
+#map stat can be grouped with fixed breaks or continuous, 
+# PHAC uses these cut-offs, breaks=c(0,1,50,100,500,1000,2000),labels = c("0", "1-50", "51-100","101-500","501-1000",">1000")
+map_case = tm_shape(testing_data)+tm_polygons(col="case",breaks=c(0,1,50,100,500,1000,2000),labels = c("0", "1-50", "51-100","101-500","501-1000",">1000"),title=" ",palette ="YlOrRd")+tm_layout(title="Cases", title.size = 1,title.position=c("left","bottom"),legend.position = c("right","top"))
+
+map_test_p = tm_shape(testing_data)+tm_polygons(col="test_pop", style = "cont", title=" ",palette ="YlOrRd")+tm_layout(title="Tests per 100,000", title.size = 1,title.position=c("left","bottom"),legend.position = c("right","top"))
+
+map_case_p = tm_shape(testing_data)+tm_polygons(col="case_pop",style = "cont", title=" ",palette ="YlOrRd")+tm_layout(title="Cases per 100,000", title.size = 1,title.position=c("left","bottom"),legend.position = c("right","top"))
+
 tmap_arrange(map_test, map_case,map_test_p, map_case_p,nrow=2,ncol=2)
+
 ```
+
 
 ## Testing results to date by province and territory
 
@@ -131,7 +136,7 @@ testprop_plot<-melt(testprop, id=c("province"))
 
 ggplot(testprop_plot, aes(x = province, y = value, fill = variable, label = value)) +
   geom_bar(stat = "identity",width = 0.5, colour="black") +
-  geom_text(size = 3, position = position_stack(vjust = 0.5),vjust=-1, na.rm=TRUE) + coord_flip() +
+  geom_text(size = 3.5, position = position_stack(vjust = 0.5),vjust=-1.2, na.rm=TRUE) + coord_flip() +
   scale_fill_manual(values = c("grey","springgreen2","red2"),name = "Test status", 
                     labels = c("Pending", "Negative", "Positive"))+
   labs(y="\n Percentage against total", x = "\n Test status by province and territory (%)")+
@@ -148,7 +153,7 @@ ggplot(testprop_plot, aes(x = province, y = value, fill = variable, label = valu
 
 ###### Footnote: For provinces that don't report pending cases, we will assume a binary testing status (postive or negative).
 
-## Cumulative tests by province between March 15 - March 27, 2020
+## Cumulative tests by province
 
 - **Highlights**
   - **Consistent increase of testing capacity over the 13-day window across Canada. Quebec displays a sharp testing increase on March 25, 2020. British Columbia displays a shart testing increase on March 20, 2020.**
@@ -157,21 +162,22 @@ ggplot(testprop_plot, aes(x = province, y = value, fill = variable, label = valu
   - **Despite having low numbers of cumulative tests, the three territories demonstrate above national average testing capacity per capita.**
   
 ```{r echo=FALSE}
+library(gridExtra)
 testing_cum <- read.table("C:/Users/kuan liu/Dropbox (Personal)/STAT_consulting/Bayesiantest/Kuan-Liu-testing_can/Kuan-Liu-testing_can/testing_cumulative.txt", header=TRUE, sep="\t")
-# testing_cum <- read.table("testing_cumulative.txt", header=TRUE, sep="\t")
-names(testing_cum)<-c("dateformate","Province","cumulative","population")
-testing_cum$dateformate<-chron(as.character(testing_cum$dateformate),format="d-m-y",out.format="month-d-y")
-testing_cum$dateformate<-as.Date(testing_cum$dateformate)
+
+names(testing_cum)<-c("dateformat","Province","cumulative","population")
+testing_cum$dateformat<-chron(as.character(testing_cum$dateformat),format="d-m-y",out.format="month-d-y")
+testing_cum$dateformat<-as.Date(testing_cum$dateformat)
 testing_cum2<-subset(testing_cum, Province %in% c("AB","BC","MB","NB","NL","NS","ON","PE","QC","SK"))
 
 library(directlabels)
 
-ggplot(testing_cum2, aes(x=dateformate, y=cumulative, colour=Province)) +
+p_testcum<-ggplot(testing_cum2, aes(x=dateformat, y=cumulative, colour=Province)) +
 geom_line(size = 1)+
   scale_y_continuous(limits = c(0, 42500), breaks = seq(0,42500,2500))+
   scale_fill_manual(name="Province")+
   scale_x_date(date_breaks="1 day",date_labels="%m-%d", 
-               limits = c(min(testing_cum2$dateformate), max(testing_cum2$dateformate) + 0.25)) +
+               limits = c(min(testing_cum2$dateformat), max(testing_cum2$dateformat) + 0.25)) +
   labs(y="\n Total number of cumulative tests by province", x="")+
   theme(panel.background = element_rect(fill = "white", colour = "white"),
         panel.grid.major = element_line(colour = "grey95"),
@@ -184,20 +190,14 @@ geom_line(size = 1)+
         legend.position = "none",
         axis.title.y = element_text(margin = margin(t = 0, r = 10, b = 0, l = 0))) + 
   geom_dl(aes(label = Province), method = list(dl.trans(x = x + 0.2), "last.qp"))
-```
 
-```{r echo=FALSE}
-testing_cum <- read.table("C:/Users/kuan liu/Dropbox (Personal)/STAT_consulting/Bayesiantest/Kuan-Liu-testing_can/Kuan-Liu-testing_can/testing_cumulative.txt", header=TRUE, sep="\t")
-names(testing_cum)<-c("dateformate","Province","cumulative","population")
-testing_cum$dateformate<-chron(as.character(testing_cum$dateformate),format="d-m-y",out.format="month-d-y")
-testing_cum$dateformate<-as.Date(testing_cum$dateformate)
 
 testprop_cum<-data.frame(testing_cum[,1:2],round(testing_cum[,3]/testing_cum[,4]*100000,1))
-names(testprop_cum)<-c("dateformate","Province","cumulative_p")
+names(testprop_cum)<-c("dateformat","Province","cumulative_p")
 testprop_cum2<-subset(testprop_cum, Province %in% c("AB","BC","MB","NB","NL","NS","ON","PE","QC","SK"))
 
 
-ggplot(testprop_cum2, aes(x=dateformate, y=cumulative_p, colour=Province)) +
+p_testcump<-ggplot(testprop_cum2, aes(x=dateformat, y=cumulative_p, colour=Province)) +
 geom_line(size = 1)+
   scale_y_continuous(limits = c(0, 900), breaks = seq(0,900,50))+
   scale_fill_manual(name="Province")+
@@ -214,6 +214,9 @@ geom_line(size = 1)+
         legend.position = "none",
         axis.title.y = element_text(margin = margin(t = 0, r = 10, b = 0, l = 0))) + 
   geom_dl(aes(label = Province), method = list(dl.trans(x = x + 0.2), "last.qp"))
+
+p_testcum
+p_testcump
 ```
 
 
@@ -221,12 +224,12 @@ geom_line(size = 1)+
 
 ```{r echo=FALSE}
 testing_cum <- read.table("C:/Users/kuan liu/Dropbox (Personal)/STAT_consulting/Bayesiantest/Kuan-Liu-testing_can/Kuan-Liu-testing_can/testing_cumulative.txt", header=TRUE, sep="\t")
-names(testing_cum)<-c("dateformate","Province","cumulative","population")
-testing_cum$dateformate<-chron(as.character(testing_cum$dateformate),format="d-m-y",out.format="month-d-y")
-testing_cum$dateformate<-as.Date(testing_cum$dateformate)
-testing_cum2<-subset(testing_cum, Province %in% c("NU","YT","NWT"))
+names(testing_cum)<-c("dateformat","Province","cumulative","population")
+testing_cum$dateformat<-chron(as.character(testing_cum$dateformat),format="d-m-y",out.format="month-d-y")
+testing_cum$dateformat<-as.Date(testing_cum$dateformat)
+testing_cum2<-subset(testing_cum, Province %in% c("NU","YT","NWT") & dateformat > as.Date("2020-03-16"))
 
-ggplot(testing_cum2, aes(x=dateformate, y=cumulative, colour=Province)) +
+p_testcumt<-ggplot(testing_cum2, aes(x=dateformat, y=cumulative, colour=Province)) +
 geom_line(size = 1)+
   scale_y_continuous(limits = c(0, 650), breaks = seq(0,650,50))+
   scale_fill_manual(name="Province")+
@@ -240,20 +243,14 @@ geom_line(size = 1)+
         legend.background = element_blank(),
         legend.key = element_blank(),
         legend.title = element_blank(),
+        legend.position = "top",
         axis.title.y = element_text(margin = margin(t = 0, r = 10, b = 0, l = 0)))
-```
-
-```{r echo=FALSE}
-testing_cum <- read.table("C:/Users/kuan liu/Dropbox (Personal)/STAT_consulting/Bayesiantest/Kuan-Liu-testing_can/Kuan-Liu-testing_can/testing_cumulative.txt", header=TRUE, sep="\t")
-names(testing_cum)<-c("dateformate","Province","cumulative","population")
-testing_cum$dateformate<-chron(as.character(testing_cum$dateformate),format="d-m-y",out.format="month-d-y")
-testing_cum$dateformate<-as.Date(testing_cum$dateformate)
 
 testprop_cum<-data.frame(testing_cum[,1:2],round(testing_cum[,3]/testing_cum[,4]*100000,1))
-names(testprop_cum)<-c("dateformate","Province","cumulative_p")
-testprop_cum2<-subset(testprop_cum, Province %in% c("NU","YT","NWT"))
+names(testprop_cum)<-c("dateformat","Province","cumulative_p")
+testprop_cum2<-subset(testprop_cum, Province %in% c("NU","YT","NWT") & dateformat > as.Date("2020-03-16"))
 
-ggplot(testprop_cum2, aes(x=dateformate, y=cumulative_p, colour=Province)) +
+p_testcumpt<-ggplot(testprop_cum2, aes(x=dateformat, y=cumulative_p, colour=Province)) +
 geom_line(size = 1)+
   scale_y_continuous(limits = c(0, 1500), breaks = seq(0,1500,100))+
   scale_fill_manual(name="Province")+
@@ -267,7 +264,11 @@ geom_line(size = 1)+
         legend.background = element_blank(),
         legend.key = element_blank(),
         legend.title = element_blank(),
+         legend.position = "top",
         axis.title.y = element_text(margin = margin(t = 0, r = 10, b = 0, l = 0)))
+
+grid.arrange(p_testcumt, p_testcumpt, nrow=1,widths = c(0.5,0.5))
+
 ```
 
 
