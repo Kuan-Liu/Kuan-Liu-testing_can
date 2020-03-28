@@ -107,10 +107,12 @@ ggplot(testprop_plot, aes(x = province, y = value, fill = variable, label = valu
                     labels = c("Pending", "Negative", "Positive"))+
   labs(y="\n Percentage against total", x = "\n Test status by province and territory (%)")+
   theme(panel.background = element_rect(fill = "white", colour = "white"),
-        panel.grid.major = element_line(colour = "grey95"),
-        panel.grid.minor = element_line(colour = "grey95"), axis.text=element_text(size=11),
+        panel.grid.major = element_line(colour = "white"),
+        panel.grid.minor = element_line(colour = "white"), axis.text=element_text(size=11),
         axis.title.y = element_text(margin = margin(t = 0, r = 10, b = 0, l = 0)), 
-        legend.position = "top") + 
+        legend.position = "top", 
+        axis.ticks.y = element_blank(), 
+        panel.grid.major.x = element_line(colour = "grey94")) + 
   guides(fill = guide_legend(reverse=TRUE))
 
 ```
