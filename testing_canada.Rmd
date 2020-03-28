@@ -45,7 +45,7 @@ Data used in this repostory are extracted from the data speardsheet posted by th
 
 ## Nation-wide total number of tests to date
 
-As of March 27, 2020 (11 am EDT), the total number of patients tested in Canada is 164,564 and the total number of patients tested per 10,000 population in Canada is around 42.
+As of March 27, 2020 (11 am EDT), the total number of patients tested in Canada is 164,564 and the total number of patients tested per 10,000 population in Canada is around 44.
 
   - the total number of patients tested positive is 4,285 (2.6%)
   - the total number of patients tested negative is 147,405 (89.6%)
