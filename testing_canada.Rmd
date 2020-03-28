@@ -182,10 +182,12 @@ geom_line(size = 1)+
         panel.grid.minor = element_line(colour = "grey95"), 
         axis.text=element_text(size=11),
         axis.text.x = element_text(angle = 45, hjust = 1),
-        legend.background = element_blank(),
-        legend.key = element_blank(),
-        legend.title = element_blank(),
-        axis.title.y = element_text(margin = margin(t = 0, r = 10, b = 0, l = 0)))
+        #legend.background = element_blank(),
+        #legend.key = element_blank(),
+        #legend.title = element_blank(),
+        legend.position = "none",
+        axis.title.y = element_text(margin = margin(t = 0, r = 10, b = 0, l = 0))) + 
+  geom_dl(aes(label = Province), method = list(dl.trans(x = x + 0.2), "last.qp"))
 ```
 
 
