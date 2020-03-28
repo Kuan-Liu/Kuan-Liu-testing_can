@@ -70,7 +70,9 @@ kable(testing_todate[,1:7], caption = "Reported testing data province and territ
 ```
 
 ###### Footnote: It's likely individuals may have been tested more than once. We are collecting publicly avaliable information online to best match patients with testing numbers. Unfortunately, detailed information is not always avaiable, so please read these data with caution.
-  
+
+## Testing results to date by province and territory
+
 - **Highlights**
   - **Nunavut has no confirmed case yet.**
   - **Among the 3 provinces that reported pending tests (Quebec, Ontario and Prince Edward Island), Quebec has the highest proportion of positive tests (4.9%).**
