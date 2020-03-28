@@ -64,20 +64,22 @@ As of March 27, 2020 (10 pm EDT), the total number of patients tested in Canada 
 ```{r results='asis', echo=FALSE}
 testing_todate <- read.table("C:/Users/kuan liu/Dropbox (Personal)/STAT_consulting/Bayesiantest/Kuan-Liu-testing_can/Kuan-Liu-testing_can/testing_todate.txt", header=FALSE, sep="\t")
 # testing_todate <- read.table("testing_todate.txt", header=FALSE, sep="\t")
-names(testing_todate)[1:7]<-c("Province","Reported Positive","Reported Negative","Reported Pending","Total","Est. Population","Total per 10,000 people")
+names(testing_todate)[1:7]<-c("Province ","Reported Positive","Reported Negative","Reported Pending","Total","Est. Population","Total per 10,000 population")
 
 testing_todate_p<-testing_todate[testing_todate$Province %in% c("AB","BC","MB","NB","NL","NS","ON","PEI","QC","SK"),]
 testing_todate_t<-testing_todate[testing_todate$Province %in% c("NWT","YT","NU"),]
 
-testing_todate_p<-testing_todate_p[order(testing_todate_p$`Total per 10,000 people`, decreasing = TRUE),]
-testing_todate_t<-testing_todate_t[order(testing_todate_t$`Total per 10,000 people`, decreasing = TRUE),]
+testing_todate_p<-testing_todate_p[order(testing_todate_p$`Total per 10,000 population`, decreasing = TRUE),]
+testing_todate_t<-testing_todate_t[order(testing_todate_t$`Total per 10,000 population`, decreasing = TRUE),]
+names(testing_todate_t)[1:7]<-c("Territory","Reported Positive","Reported Negative","Reported Pending","Total","Est. Population","Total per 10,000 population")
+# testing_todate<-rbind(testing_todate_p,testing_todate_t)
 
-testing_todate<-rbind(testing_todate_p,testing_todate_t)
+kable(testing_todate_p[,1:7], caption = "Reported testing data province and territory, public data accessed online as of March 27, 2020 (8 pm EDT).", row.names = FALSE, align=c("c","c","c","c","c","c","c"))
 
-kable(testing_todate[,1:7], caption = "Reported testing data province and territory, public data accessed online as of March 27, 2020 (8 pm EDT). Reported positive tests include resolved and deceased cases.", row.names = FALSE)
+kable(testing_todate_t[,1:7], row.names = FALSE,align=c("c","c","c","c","c","c","c"))
 ```
 
-###### Footnote: It's likely individuals may have been tested more than once. We are collecting publicly avaliable information online to best match patients with testing numbers. Unfortunately, detailed information is not always avaiable, so please read these data with caution.
+###### Footnote: It's likely individuals may have been tested more than once. We are collecting publicly avaliable information online to best match patients with testing numbers. Unfortunately, detailed information is not always avaiable, so please read these data with caution. Reported positive tests include resolved and deceased cases.
 
 ## Testing results to date by province and territory
 
