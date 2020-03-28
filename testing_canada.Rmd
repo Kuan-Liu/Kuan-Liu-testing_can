@@ -63,7 +63,7 @@ As of March 27, 2020 (10 pm EDT), the total number of patients tested in Canada 
   
 ```{r results='asis', echo=FALSE}
 testing_todate <- read.table("C:/Users/kuan liu/Dropbox (Personal)/STAT_consulting/Bayesiantest/Kuan-Liu-testing_can/Kuan-Liu-testing_can/testing_todate.txt", header=FALSE, sep="\t")
-
+# testing_todate <- read.table("testing_todate.txt", header=FALSE, sep="\t")
 names(testing_todate)[1:7]<-c("Province","Reported Positive","Reported Negative","Reported Pending","Total","Est. Population","Total per 10,000 people")
 
 testing_todate_p<-testing_todate[testing_todate$Province %in% c("AB","BC","MB","NB","NL","NS","ON","PEI","QC","SK"),]
