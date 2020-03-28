@@ -138,21 +138,26 @@ testing_cum2<-subset(testing_cum, Province %in% c("AB","BC","MB","NB","NL","NS",
 testprop_cum<-data.frame(testing_cum[,1:2],round(testing_cum[,3]/testing_cum[,4]*10000,1))
 names(testprop_cum)<-c("dateformate","Province","cumulative_p")
 
+library(directlabels)
+
 ggplot(testing_cum2, aes(x=dateformate, y=cumulative, colour=Province)) +
 geom_line(size = 1)+
   scale_y_continuous(limits = c(0, 42500), breaks = seq(0,42500,2500))+
   scale_fill_manual(name="Province")+
-  scale_x_date(date_breaks="1 day",date_labels="%m-%d")+
+  scale_x_date(date_breaks="1 day",date_labels="%m-%d", 
+               limits = c(min(testing_cum2$dateformate), max(testing_cum2$dateformate) + 0.25)) +
   labs(y="\n Total number of cumulative tests by province", x="")+
   theme(panel.background = element_rect(fill = "white", colour = "white"),
         panel.grid.major = element_line(colour = "grey95"),
         panel.grid.minor = element_line(colour = "grey95"), 
         axis.text=element_text(size=11),
         axis.text.x = element_text(angle = 45, hjust = 1),
-        legend.background = element_blank(),
-        legend.key = element_blank(),
-        legend.title = element_blank(),
-        axis.title.y = element_text(margin = margin(t = 0, r = 10, b = 0, l = 0)))
+        #legend.background = element_blank(),
+        #legend.key = element_blank(),
+        #legend.title = element_blank(),
+        legend.position = "none",
+        axis.title.y = element_text(margin = margin(t = 0, r = 10, b = 0, l = 0))) + 
+  geom_dl(aes(label = Province), method = list(dl.trans(x = x + 0.2), "last.qp"))
 ```
 
 ```{r echo=FALSE}
@@ -164,6 +169,7 @@ testing_cum$dateformate<-as.Date(testing_cum$dateformate)
 testprop_cum<-data.frame(testing_cum[,1:2],round(testing_cum[,3]/testing_cum[,4]*10000,1))
 names(testprop_cum)<-c("dateformate","Province","cumulative_p")
 testprop_cum2<-subset(testprop_cum, Province %in% c("AB","BC","MB","NB","NL","NS","ON","PE","QC","SK"))
+
 
 ggplot(testprop_cum2, aes(x=dateformate, y=cumulative_p, colour=Province)) +
 geom_line(size = 1)+
