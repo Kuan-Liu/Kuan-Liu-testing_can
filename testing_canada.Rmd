@@ -111,9 +111,9 @@ map_test = tm_shape(testing_data)+tm_polygons(col="test",breaks=c(0,1000,5000,10
 # PHAC uses these cut-offs, breaks=c(0,1,50,100,500,1000,2000),labels = c("0", "1-50", "51-100","101-500","501-1000",">1000")
 map_case = tm_shape(testing_data)+tm_polygons(col="case",breaks=c(0,1,50,100,500,1000,2000,Inf),labels = c("0", "1-50", "51-100","101-500","501-1000","1001-2000",">2000"),title=" ",palette ="YlOrRd")+tm_layout(title="Cases", title.size = 1,title.position=c("left","bottom"),legend.position = c("right","top"))
 
-map_test_p = tm_shape(testing_data)+tm_polygons(col="test_pop", style = "cont", title=" ",palette ="YlOrRd")+tm_layout(title="Tests per 100,000", title.size = 1,title.position=c("left","bottom"),legend.position = c("right","top"))
+map_test_p = tm_shape(testing_data)+tm_polygons(col="test_pop",breaks=c(0,400,700,1000,Inf),labels = c("0-400", "401-700", "701-1000",">1000"), title=" ",palette ="YlOrRd")+tm_layout(title="Tests per 100,000", title.size = 1,title.position=c("left","bottom"),legend.position = c("right","top"))
 
-map_case_p = tm_shape(testing_data)+tm_polygons(col="case_pop",style = "cont", title=" ",palette ="YlOrRd")+tm_layout(title="Cases per 100,000", title.size = 1,title.position=c("left","bottom"),legend.position = c("right","top"))
+map_case_p = tm_shape(testing_data)+tm_polygons(col="case_pop",breaks=c(0,1,10,20,Inf),labels = c("0", "1-10", "11-20",">20"), title=" ",palette ="YlOrRd")+tm_layout(title="Cases per 100,000", title.size = 1,title.position=c("left","bottom"),legend.position = c("right","top"))
 
 tmap_arrange(map_test, map_case,map_test_p, map_case_p,nrow=2,ncol=2)
 
