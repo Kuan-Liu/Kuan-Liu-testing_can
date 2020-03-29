@@ -39,7 +39,7 @@ library("chron")
 
 **From the authors: Thank you for your interest in our work! We are constantly working to improve this website and all comments and feedbacks are welcome. For most accurate and reliable Canadian COVID-19 epidemiology data, please visit Public Health Agency of Canada COVID-19 report site at https://www.canada.ca/en/public-health/services/diseases/2019-novel-coronavirus-infection.html (Full PDF report available).**
 
-## Acknowledgement
+## Acknowledgment
 Data used in this repostory are extracted from the data speardsheet posted by the COVID-19 Canada Open Data Working Group (https://github.com/ishaberry/Covid19Canada). This working group, lead by Isha Berry and Jean-Paul R. Soucy from Dalla Lana School of Public Health, Unviersity of Toronto, has created an interactive dashboard on Canadian COVID-19 epidemiology data. We direct readers to visit the dashboard at https://art-bd.shinyapps.io/covid19canada/.
 
 ## 1. Objectives and key messages
@@ -50,19 +50,18 @@ Data used in this repostory are extracted from the data speardsheet posted by th
 
 ### Nation-wide total number of tests to date
 
-As of March 27, 2020 (10 pm EDT), the total number of patients tested in Canada is **170,644** and the total number of patients tested per 100,000 population in Canada is around **454**.
+As of March 28, 2020 (10 pm EDT), the total number of patients tested in Canada is **184,201** and the total number of patients tested per 100,000 population in Canada is around **490**.
 
-  - the total number of patients tested positive is **4,516 (2.6%)**
-  - the total number of patients tested negative is **153,735 (90.1%)**
-  - the rest **12,393 (7.3%)** patients are likely under investigation waiting for test results, detailed information is not available.
+  - the total number of patients tested positive is **5,153 (2.8%)**
+  - the total number of patients tested negative is **166,621 (90.5%)**
+  - the rest **12,427 (6.7%)** patients are likely under investigation waiting for test results, detailed information is not available.
 
 ### Total number of tests to date by province and territory
 
 - **Highlights**
   - **Alberta, British Columbia and Saskatchewan are the top three provinces ranking by the number of tests per 100,000 population.**
-  - **Quebec has rapidly increased its testing capacity. The total number of tests per 100,000 population has increased to 490 as of Mar 27, 2020 comparing to 365 on Mar 25, 2020.**
+  - **Quebec has rapidly increased its testing capacity. The total number of tests per 100,000 population has increased to 623 as of Mar 28, 2020 comparing to 365 on Mar 25, 2020.**
   - **Northwest territories and Yukon reported over 1000 tests per 100,000 population, highest in Canada.**
-  - **Only 3 provinces, Ontario, Quebec and Prince Edward Island, reported the number of tests pending results. There appears to be a back log of test reporting in Ontario. However the back log in Ontario is observed to be decreasing. The proportion of pending tests in Ontario on Mar 27, 2020 is 24.6% comparing to the same proportion on Mar 25, 2020 at 29.4%.**
   
 ```{r results='asis', echo=FALSE}
 testing_todate <- read.table("C:/Users/kuan liu/Dropbox (Personal)/STAT_consulting/Bayesiantest/Kuan-Liu-testing_can/Kuan-Liu-testing_can/testing_todate.txt", header=FALSE, sep="\t")
@@ -70,7 +69,7 @@ testing_todate <- read.table("C:/Users/kuan liu/Dropbox (Personal)/STAT_consulti
 names(testing_todate)[1:7]<-c("Province ","Reported Positive","Reported Negative","Reported Pending","Total","Est. Population","Total per 100,000 population")
 
 testing_todate_p<-testing_todate[testing_todate$Province %in% c("AB","BC","MB","NB","NL","NS","ON","PE","QC","SK"),]
-testing_todate_t<-testing_todate[testing_todate$Province %in% c("NWT","YT","NU"),]
+testing_todate_t<-testing_todate[testing_todate$Province %in% c("NT","YT","NU"),]
 
 testing_todate_p<-testing_todate_p[order(testing_todate_p$`Total per 100,000 population`, decreasing = TRUE),]
 testing_todate_t<-testing_todate_t[order(testing_todate_t$`Total per 100,000 population`, decreasing = TRUE),]
@@ -86,7 +85,7 @@ kable(testing_todate_t[,1:7], row.names = FALSE,align=c("c","c","c","c","c","c",
 
 <br>
 
-#### Geographic mapping on the total number of tests, total number of cases, total number of tests per 100,000 population and total number of cases per 100,000 population as of Mar 27, 2020
+#### Geographic mapping on the total number of tests, total number of cases, total number of tests per 100,000 population and total number of cases per 100,000 population as of Mar 28, 2020
 ```{r echo=FALSE,results='hide',message = FALSE, warning = FALSE}
 # install.packages("tmap")
 # install.packages("tmaptools")
@@ -99,18 +98,18 @@ library("rgdal")
 # library("shinyjs")
 
 mapstat<-read.table("C:/Users/kuan liu/Dropbox (Personal)/STAT_consulting/Bayesiantest/Kuan-Liu-testing_can/Kuan-Liu-testing_can/testing_mapsdata.txt", header = TRUE, sep="\t")
-# mapstat <- read.table("testing_mapsdata.txt", header = TRUE, sep="\t")
+
 canada_prov <- readOGR(dsn = "C:/Users/kuan liu/Dropbox (Personal)/STAT_consulting/Bayesiantest/Kuan-Liu-testing_can/Kuan-Liu-testing_can",
                        encoding='UTF-8',layer = "Canada")
-#canada_prov <- readOGR(dsn = "Kuan-Liu-testing_can", encoding='UTF-8',layer = "Canada")
+
 canada_prov$id<-c(24, 12, 47, 48, 10, 59, 13, 11, 60, 46, 35, 62, 61)
 testing_data<-merge(canada_prov, mapstat, by="id")
 
-map_test = tm_shape(testing_data)+tm_polygons(col="test",breaks=c(0,1000,5000,10000,40000,50000),labels = c("<1000", "1000-5000", "5001-10000","10001-40000",">40000"),title=" ",palette ="YlOrRd")+tm_layout(title="Tests", title.size = 1,title.position=c("left","bottom"),legend.position = c("right","top"))
+map_test = tm_shape(testing_data)+tm_polygons(col="test",breaks=c(0,1000,5000,10000,40000, Inf),labels = c("<1000", "1000-5000", "5001-10000","10001-40000",">40000"), title=" ",palette ="YlOrRd")+tm_layout(title="Tests", title.size = 1,title.position=c("left","bottom"),legend.position = c("right","top"))
 
 #map stat can be grouped with fixed breaks or continuous, 
 # PHAC uses these cut-offs, breaks=c(0,1,50,100,500,1000,2000),labels = c("0", "1-50", "51-100","101-500","501-1000",">1000")
-map_case = tm_shape(testing_data)+tm_polygons(col="case",breaks=c(0,1,50,100,500,1000,2000),labels = c("0", "1-50", "51-100","101-500","501-1000",">1000"),title=" ",palette ="YlOrRd")+tm_layout(title="Cases", title.size = 1,title.position=c("left","bottom"),legend.position = c("right","top"))
+map_case = tm_shape(testing_data)+tm_polygons(col="case",breaks=c(0,1,50,100,500,1000,2000,Inf),labels = c("0", "1-50", "51-100","101-500","501-1000","1001-2000",">2000"),title=" ",palette ="YlOrRd")+tm_layout(title="Cases", title.size = 1,title.position=c("left","bottom"),legend.position = c("right","top"))
 
 map_test_p = tm_shape(testing_data)+tm_polygons(col="test_pop", style = "cont", title=" ",palette ="YlOrRd")+tm_layout(title="Tests per 100,000", title.size = 1,title.position=c("left","bottom"),legend.position = c("right","top"))
 
@@ -125,14 +124,12 @@ tmap_arrange(map_test, map_case,map_test_p, map_case_p,nrow=2,ncol=2)
 
 - **Highlights**
   - **Nunavut has no confirmed case yet.**
-  - **Among the 3 provinces that reported pending tests (Quebec, Ontario and Prince Edward Island), Quebec has the highest proportion of positive tests (4.9%).**
   - **Newfoundland and Labrador has the highest proportion of positive tests (6%). This can be interpreted as for every 100 tests completed (with known results) in Newfoundland and Labrador, we expect around 6 of them to be postive.**
+  - **There appears to be a back log of test reporting in Ontario and Prince Edward Island. However the back log in Ontario is observed to be decreasing. The proportion of pending tests in Ontario on Mar 28, 2020 is 20.2% comparing to the same proportion on Mar 25, 2020 at 29.4%.**
   
 ```{r echo=FALSE}
-# treatment reason plot;
+
 library(devtools)
-# install_github('datarootsio/artyfarty')
-# library(artyfarty)
 library(reshape2)
 
 testprop<-data.frame(testing_todate[,1],round(testing_todate[,4]/testing_todate[,5]*100,1),round(testing_todate[,3]/testing_todate[,5]*100,1),round(testing_todate[,2]/testing_todate[,5]*100,1))
@@ -165,27 +162,30 @@ ggplot(testprop_plot, aes(x = province, y = value, fill = variable, label = valu
 - **Highlights**
   - **Consistent increase of testing capacity over the 13-day window across Canada. Quebec displays a sharp testing increase on March 25, 2020. British Columbia displays a shart testing increase on March 20, 2020.**
   - **Alberta, Ontario, British Columbia and Quebec are the top 4 provinces ranked by the total number of cumulative tests**
-  - **Alberta, British Columbia and Quebec also rank high among the 10 provinces by the total number of tests conducted per 100,000 population. It seems Ontario is falling slight behind the above three provinces on the testing capacity per capita. **
-  - **Despite having low numbers of cumulative tests, the three territories demonstrate above national average testing capacity per capita.**
-  
+  - **It seems Ontario is falling slight behind on the testing capacity per capita. **
+ 
 ```{r echo=FALSE}
 library(gridExtra)
-testing_cum <- read.table("C:/Users/kuan liu/Dropbox (Personal)/STAT_consulting/Bayesiantest/Kuan-Liu-testing_can/Kuan-Liu-testing_can/testing_cumulative.txt", header=TRUE, sep="\t")
-#testing_cum <- read.table("testing_cumulative.txt", header=TRUE, sep="\t")
 library(ggthemes)
 library(dichromat)
+library(directlabels)
+
+testing_cum <- read.table("C:/Users/kuan liu/Dropbox (Personal)/STAT_consulting/Bayesiantest/Kuan-Liu-testing_can/Kuan-Liu-testing_can/testing_cumulative.txt", header=TRUE, sep="\t")
 
 names(testing_cum)<-c("dateformat","Province","cumulative","population")
 testing_cum$dateformat<-chron(as.character(testing_cum$dateformat),format="d-m-y",out.format="month-d-y")
 testing_cum$dateformat<-as.Date(testing_cum$dateformat)
 testing_cum2<-subset(testing_cum, Province %in% c("AB","BC","MB","NB","NL","NS","ON","PE","QC","SK"))
 
-library(directlabels)
+#scale_colour_colorblind only contents 8 discrete colours, we have 10 provinces so I used the same colour pallete code but added to more colours =);
+
+teamcolour_province<-c("#000000","#E69F00","#800000","#CC79A7","#56B4E9","#808000","#009E73","#0000A0","#0072B2","#800080")
 
 p_testcum<-ggplot(testing_cum2, aes(x=dateformat, y=cumulative, colour=Province)) +
-geom_line(size = 1)+
-  scale_y_continuous(limits = c(0, 42500), breaks = seq(0,42500,5000))+
-  scale_colour_colorblind(name="Province")+
+geom_line(size = 1)+geom_point()+
+  scale_y_continuous(limits = c(0, 54000), breaks = seq(0,55000,5000))+
+  scale_color_manual(values=teamcolour_province)+
+  # scale_colour_brewer(palette="Spectral",direction=-1)+
   scale_x_date(date_breaks="1 day",date_labels="%b %d", 
                limits = c(min(testing_cum2$dateformat), max(testing_cum2$dateformat) + 0.25)) +
   labs(y="\n Total number of cumulative tests by province", x="")+
@@ -196,7 +196,7 @@ geom_line(size = 1)+
         axis.text.x = element_text(angle = 45, hjust = 1),
         #legend.background = element_blank(),
         #legend.key = element_blank(),
-        #legend.title = element_blank(),
+        #legend.title = element_blank(), 
         legend.position = "none",
         axis.title.y = element_text(margin = margin(t = 0, r = 10, b = 0, l = 0))) + 
   geom_dl(aes(label = Province), method = list(dl.trans(x = x + 0.2), "last.qp"))
@@ -208,9 +208,11 @@ testprop_cum2<-subset(testprop_cum, Province %in% c("AB","BC","MB","NB","NL","NS
 
 
 p_testcump<-ggplot(testprop_cum2, aes(x=dateformat, y=cumulative_p, colour=Province)) +
-geom_line(size = 1)+
-  scale_y_continuous(limits = c(0, 900), breaks = seq(0,900,100))+
-  scale_colour_colorblind(name="Province")+
+geom_line(size = 1)+geom_point()+
+  geom_hline(yintercept=490, linetype="dashed", color = "black") +
+  geom_text(x=as.Date("2020-03-16"),y=510,label="Mar 28 National est.",color="black")+
+  scale_y_continuous(limits = c(0, 1000), breaks = seq(0,1000,100))+
+  scale_color_manual(values=teamcolour_province)+
   scale_x_date(date_breaks="1 day",date_labels="%b %d")+
   labs(y="\n Total number of cumulative tests per 100,000 population \n by province", x="")+
   theme(panel.background = element_rect(fill = "white", colour = "white"),
@@ -230,17 +232,17 @@ p_testcump
 ```
 
 
-## Cumulative tests by territory
-
 ```{r echo=FALSE}
-testing_cum2<-subset(testing_cum, Province %in% c("NU","YT","NWT") & dateformat > as.Date("2020-03-16"))
+teamcolour_territory<-c("#625D5D","#1589FF","#E56717")
+
+testing_cum2<-subset(testing_cum, Province %in% c("NU","YT","NT") & dateformat > as.Date("2020-03-16"))
 
 p_testcumt<-ggplot(testing_cum2, aes(x=dateformat, y=cumulative, colour=Province)) +
 geom_line(size = 1)+geom_point()+
-  scale_y_continuous(limits = c(100, 650), breaks = seq(100,650,100))+
-  scale_colour_colorblind(name="Province")+
+  scale_y_continuous(limits = c(0, 800), breaks = seq(0,800,100))+
+  scale_color_manual(values=teamcolour_territory)+
   scale_x_date(date_breaks="1 day",date_labels="%b %d")+
-  labs(y="\n Total number of cumulative tests by territory", x="")+
+  labs(y="\n Total number of cumulative tests \n by territory", x="")+
   theme(panel.background = element_rect(fill = "white", colour = "white"),
         panel.grid.major = element_line(colour = "grey95"),
         #panel.grid.minor = element_line(colour = "grey95"), 
@@ -255,14 +257,15 @@ geom_line(size = 1)+geom_point()+
 
 testprop_cum<-data.frame(testing_cum[,1:2],round(testing_cum[,3]/testing_cum[,4]*100000,1))
 names(testprop_cum)<-c("dateformat","Province","cumulative_p")
-testprop_cum2<-subset(testprop_cum, Province %in% c("NU","YT","NWT") & dateformat > as.Date("2020-03-16"))
+testprop_cum2<-subset(testprop_cum, Province %in% c("NU","YT","NT") & dateformat > as.Date("2020-03-16"))
 
 p_testcumpt<-ggplot(testprop_cum2, aes(x=dateformat, y=cumulative_p, colour=Province)) +
 geom_line(size = 1)+geom_point()+
-  scale_y_continuous(limits = c(100, 1500), breaks = seq(100,1500,200))+
-  scale_colour_colorblind(name="Province")+
+  # geom_hline(yintercept=500, linetype="dashed", color = "black") +
+  scale_y_continuous(limits = c(0, 1800), breaks = seq(0,1800,250))+
+  scale_color_manual(values=teamcolour_territory)+
   scale_x_date(date_breaks="1 day",date_labels="%b %d")+
-  labs(y="\n Total number of cumulative tests per 100,000 population \n by territory", x="")+
+  labs(y="\n Total number of cumulative tests \n per 100,000 population by territory", x="")+
   theme(panel.background = element_rect(fill = "white", colour = "white"),
         panel.grid.major = element_line(colour = "grey95"),
         #panel.grid.minor = element_line(colour = "grey95"), 
@@ -275,7 +278,7 @@ geom_line(size = 1)+geom_point()+
         axis.title.y = element_text(margin = margin(t = 0, r = 10, b = 0, l = 0))) + 
   geom_dl(aes(label = Province), method = list(dl.trans(x = x + 0.2), "last.qp"))
 
-cowplot::plot_grid(p_testcumt, p_testcumpt, nrow=2, rel_heights = c(0.43,0.57), align = "v")
+cowplot::plot_grid(p_testcumt, p_testcumpt, nrow=2, rel_heights = c(0.5,0.5), align = "v")
 
 ```
 
@@ -283,7 +286,7 @@ cowplot::plot_grid(p_testcumt, p_testcumpt, nrow=2, rel_heights = c(0.43,0.57), 
 
 - **Highlights**
   - **Quebec has increased its testing capacity on March 22, 2020 to allow the direct inclusion of hospital laboratories' testing results. This explains the observed dramatic increase on the number of tests completed on March 24, 2020. It's likely these additional tests reported on that day were completed over the past three days.**
-  - **Given the most recent data, Quebec and British Columbia complete on average 5,000 or more tests per day. Ontario completes on average 3,000 tests per day and Alberta completes on average 1,500 tests per day.**
+  - **Given the most recent data, Quebec completes on average 10,000 tests per day. British Columbia and Alberta complete on average 4,000 to 5,000 tests per day. Ontario completes around 2,000, to 3,000 tests per day.**
   - **The number of tests completed per day does NOT directly reflect regional testing capacity. Provinces and territories with small number of COVID-19 cases are expected to complete less tests per day.**
 
 
@@ -291,8 +294,8 @@ cowplot::plot_grid(p_testcumt, p_testcumpt, nrow=2, rel_heights = c(0.43,0.57), 
 
 The number of tests completed on March 25 in Ontario 
 
-= the number of tests cumulative tests reported on March 26 in Ontario - the number of tests cumulative tests reported on March 25 in Ontario = 36660 - 	35508 = 1152.
-
+= the number of tests cumulative tests reported on March 26 in Ontario - the number of tests cumulative tests reported on March 25 in Ontario = 38550 - 	35635 = 2915.
+<!-- made error reported alberta instead of ontario -->
 ```{r echo=FALSE}
 library(dplyr)
 
@@ -304,7 +307,7 @@ testing_cum$est_daily<-testing_cum$lead_value - testing_cum$cumulative
 testing_cum$est_daily2<-ifelse(testing_cum$est_daily<=0,NA, testing_cum$est_daily)
 
 #Province plot;
-testing_cum2<-subset(testing_cum, Province %in% c("AB","BC","MB","NB","NL","NS","ON","PE","QC","SK")& dateformat > as.Date("2020-03-19") & dateformat < as.Date("2020-03-27"))
+testing_cum2<-subset(testing_cum, Province %in% c("AB","BC","MB","NB","NL","NS","ON","PE","QC","SK")& dateformat > as.Date("2020-03-19") & dateformat < as.Date("2020-03-28"))
 
 testing_cum_top<-subset(testing_cum2, Province %in% c("AB","BC","ON","QC"))
 
@@ -312,7 +315,7 @@ topp<-ggplot(testing_cum_top, aes(x=dateformat, y=est_daily2, colour=Province)) 
   geom_point()+
   geom_line(data=testing_cum_top[!is.na(testing_cum_top$est_daily2),],size = 1)+
   scale_y_continuous(limits = c(0, 15300), breaks = seq(0,15300,1000))+
-  scale_colour_colorblind(name="Province")+
+  scale_color_manual(values=teamcolour_province[c(1,2,7,9)])+
   scale_x_date(date_breaks="1 day",date_labels="%b %d", 
                limits = c(min(testing_cum2$dateformat), max(testing_cum2$dateformat) + 0.25)) +
   geom_hline(yintercept=1000, linetype="dashed", color = "black") +
@@ -321,24 +324,27 @@ topp<-ggplot(testing_cum_top, aes(x=dateformat, y=est_daily2, colour=Province)) 
   labs(y="\n Total number of completed tests per day by province")+
   theme(panel.background = element_rect(fill = "white", colour = "white"),
         panel.grid.major = element_line(colour = "grey95"),
-        panel.grid.minor = element_line(colour = "grey95"), 
+        # panel.grid.minor = element_line(colour = "grey95"), 
         axis.text=element_text(size=11),
         axis.title.x = element_blank(),
         axis.text.x = element_text(angle = 45, hjust = 1),
-        legend.position = "none",
-        axis.title.y = element_text(margin = margin(t = 0, r = 10, b = 0, l = 0))) + 
-  geom_dl(aes(label = Province), method = list(dl.trans(x = x + 0.2), "last.qp"))
+        legend.background = element_blank(),
+        legend.key = element_blank(),
+        legend.title = element_blank(),
+        legend.position =  c(0.1,0.9),
+        axis.title.y = element_text(margin = margin(t = 0, r = 10, b = 0, l = 0))) 
+# + geom_dl(aes(label = Province), method = list(dl.trans(x = x + 0.2), "last.qp")) #the end point is not the same having errors.
 
 
-testing_cum_bot<-subset(testing_cum2, Province %in% c("NB","NL","PE","SK"))
+testing_cum_bot<-subset(testing_cum2, Province %in% c("MB","NB","NL","NS","PE","SK"))
 
 library(dichromat)
 
 botp<-ggplot(testing_cum_bot, aes(x=dateformat, y=est_daily2, colour=Province)) +
   geom_point()+
   geom_line(data=testing_cum_bot[!is.na(testing_cum_bot$est_daily2),],size = 1)+
-  scale_y_continuous(limits = c(0, 1000), breaks = seq(0,1000,100))+
-  scale_colour_tableau(name="Province")+
+  scale_y_continuous(limits = c(0, 1100), breaks = seq(0,1100,100))+
+  scale_color_manual(values=teamcolour_province[c(3,4,5,6,8,10)])+
   scale_x_date(date_breaks="1 day",date_labels="%b %d", 
                limits = c(min(testing_cum2$dateformat), max(testing_cum2$dateformat) + 0.25)) +
   theme(panel.background = element_rect(fill = "white", colour = "white"),
@@ -348,19 +354,22 @@ botp<-ggplot(testing_cum_bot, aes(x=dateformat, y=est_daily2, colour=Province)) 
         axis.title.y = element_blank(),
         axis.text=element_text(size=11),
         axis.text.x = element_text(angle = 45, hjust = 1),
-        legend.position = "none") + 
-  geom_dl(aes(label = Province), method = list(dl.trans(x = x + 0.2), "last.qp"))
+        legend.background = element_blank(),
+        legend.key = element_blank(),
+        legend.title = element_blank(),
+        legend.position =  c(0.1,0.9)) 
+# +geom_dl(aes(label = Province), method = list(dl.trans(x = x + 0.2), "last.qp")) #the end point is not the same having errors.
 
 grid.arrange(topp, botp, nrow=1,widths = c(0.53,0.47))
 
 
 #Territory plot;
-testing_cumt<-subset(testing_cum, Province %in% c("NU","YT","NWT") & dateformat > as.Date("2020-03-19") & dateformat < as.Date("2020-03-27"))
+testing_cumt<-subset(testing_cum, Province %in% c("NU","YT","NT") & dateformat > as.Date("2020-03-19") & dateformat < as.Date("2020-03-28"))
 
 ggplot(testing_cumt, aes(x=dateformat, y=est_daily2, colour=Province)) +
 geom_line(data=testing_cumt[!is.na(testing_cumt$est_daily2),],size = 1)+geom_point()+
-  scale_y_continuous(limits = c(0, 100), breaks = seq(0,100,10))+
-  scale_colour_tableau(palette = "Tableau 20", name="Province")+
+  scale_y_continuous(limits = c(0, 200), breaks = seq(0,200,10))+
+  scale_color_manual(values=teamcolour_territory)+
   scale_x_date(date_breaks="1 day",date_labels="%b %d")+
   labs(y="\n Total number of completed tests per day by territory", x="")+
   theme(panel.background = element_rect(fill = "white", colour = "white"),
@@ -371,12 +380,16 @@ geom_line(data=testing_cumt[!is.na(testing_cumt$est_daily2),],size = 1)+geom_poi
         legend.background = element_blank(),
         legend.key = element_blank(),
         legend.title = element_blank(),
-        legend.position = "none",
-        axis.title.y = element_text(margin = margin(t = 0, r = 10, b = 0, l = 0))) + 
-  geom_dl(aes(label = Province), method = list(dl.trans(x = x + 0.2), "last.qp"))
+        legend.position = c(0.1,0.9),
+        axis.title.y = element_text(margin = margin(t = 0, r = 10, b = 0, l = 0))) 
+# + geom_dl(aes(label = Province), method = list(dl.trans(x = x + 0.2), "last.qp"))
+
+
 
 ```
 
+  
+  
 ### Important jurisdiction-specific dates
 
   - March 22, 2020, Nova Scotia declared state of emergency
@@ -395,6 +408,7 @@ geom_line(data=testing_cumt[!is.na(testing_cumt$est_daily2),],size = 1)+geom_poi
 
 
 ## Reference
+
 - COVID-19 Canada Open Data Working Group. Epidemiological Data from the COVID-19 Outbreak in Canada. https://github.com/ishaberry/Covid19Canada. (2020-03-25).
 - [National testing data to date] https://www.canada.ca/en/public-health/services/diseases/2019-novel-coronavirus-infection.html and https://www.ctvnews.ca/health/coronavirus/tracking-every-case-of-covid-19-in-canada-1.4852102
 - [Ontario testing data to date] https://www.ontario.ca/page/2019-novel-coronavirus
