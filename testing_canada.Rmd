@@ -311,9 +311,9 @@ testing_cum_top<-subset(testing_cum2, Province %in% c("AB","BC","ON","QC"))
 topp<-ggplot(testing_cum_top, aes(x=dateformat, y=est_daily2, colour=Province)) +
   geom_point()+
   geom_line(data=testing_cum_top[!is.na(testing_cum_top$est_daily2),],size = 1)+
-  scale_y_continuous(limits = c(0, 15300), breaks = seq(0,15300,500))+
+  scale_y_continuous(limits = c(0, 15300), breaks = seq(0,15300,1000))+
   scale_colour_colorblind(name="Province")+
-  scale_x_date(date_breaks="1 day",date_labels="%m-%d", 
+  scale_x_date(date_breaks="1 day",date_labels="%b %d", 
                limits = c(min(testing_cum2$dateformat), max(testing_cum2$dateformat) + 0.25)) +
   geom_hline(yintercept=1000, linetype="dashed", color = "black") +
   geom_hline(yintercept=3000, linetype="dashed", color = "black") +
@@ -332,11 +332,13 @@ topp<-ggplot(testing_cum_top, aes(x=dateformat, y=est_daily2, colour=Province)) 
 
 testing_cum_bot<-subset(testing_cum2, Province %in% c("NB","NL","PE","SK"))
 
+library(dichromat)
+
 botp<-ggplot(testing_cum_bot, aes(x=dateformat, y=est_daily2, colour=Province)) +
   geom_point()+
   geom_line(data=testing_cum_bot[!is.na(testing_cum_bot$est_daily2),],size = 1)+
   scale_y_continuous(limits = c(0, 1000), breaks = seq(0,1000,100))+
-  scale_colour_colorblind(name="Province")+
+  scale_colour_tableau(name="Province")+
   scale_x_date(date_breaks="1 day",date_labels="%b %d", 
                limits = c(min(testing_cum2$dateformat), max(testing_cum2$dateformat) + 0.25)) +
   theme(panel.background = element_rect(fill = "white", colour = "white"),
@@ -358,7 +360,7 @@ testing_cumt<-subset(testing_cum, Province %in% c("NU","YT","NWT") & dateformat 
 ggplot(testing_cumt, aes(x=dateformat, y=est_daily2, colour=Province)) +
 geom_line(data=testing_cumt[!is.na(testing_cumt$est_daily2),],size = 1)+geom_point()+
   scale_y_continuous(limits = c(0, 100), breaks = seq(0,100,10))+
-  scale_colour_colorblind(name="Province")+
+  scale_colour_tableau(palette = "Tableau 20", name="Province")+
   scale_x_date(date_breaks="1 day",date_labels="%b %d")+
   labs(y="\n Total number of completed tests per day by territory", x="")+
   theme(panel.background = element_rect(fill = "white", colour = "white"),
