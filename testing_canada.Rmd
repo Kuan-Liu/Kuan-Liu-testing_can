@@ -167,6 +167,8 @@ ggplot(testprop_plot, aes(x = province, y = value, fill = variable, label = valu
 library(gridExtra)
 testing_cum <- read.table("C:/Users/kuan liu/Dropbox (Personal)/STAT_consulting/Bayesiantest/Kuan-Liu-testing_can/Kuan-Liu-testing_can/testing_cumulative.txt", header=TRUE, sep="\t")
 #testing_cum <- read.table("testing_cumulative.txt", header=TRUE, sep="\t")
+library(ggthemes)
+library(dichromat)
 
 names(testing_cum)<-c("dateformat","Province","cumulative","population")
 testing_cum$dateformat<-chron(as.character(testing_cum$dateformat),format="d-m-y",out.format="month-d-y")
@@ -177,14 +179,14 @@ library(directlabels)
 
 p_testcum<-ggplot(testing_cum2, aes(x=dateformat, y=cumulative, colour=Province)) +
 geom_line(size = 1)+
-  scale_y_continuous(limits = c(0, 42500), breaks = seq(0,42500,2500))+
-  scale_fill_manual(name="Province")+
-  scale_x_date(date_breaks="1 day",date_labels="%m-%d", 
+  scale_y_continuous(limits = c(0, 42500), breaks = seq(0,42500,5000))+
+  scale_colour_colorblind(name="Province")+
+  scale_x_date(date_breaks="1 day",date_labels="%b %d", 
                limits = c(min(testing_cum2$dateformat), max(testing_cum2$dateformat) + 0.25)) +
   labs(y="\n Total number of cumulative tests by province", x="")+
   theme(panel.background = element_rect(fill = "white", colour = "white"),
         panel.grid.major = element_line(colour = "grey95"),
-        panel.grid.minor = element_line(colour = "grey95"), 
+        #panel.grid.minor = element_line(colour = "grey95"), 
         axis.text=element_text(size=11),
         axis.text.x = element_text(angle = 45, hjust = 1),
         #legend.background = element_blank(),
@@ -203,7 +205,7 @@ testprop_cum2<-subset(testprop_cum, Province %in% c("AB","BC","MB","NB","NL","NS
 p_testcump<-ggplot(testprop_cum2, aes(x=dateformat, y=cumulative_p, colour=Province)) +
 geom_line(size = 1)+
   scale_y_continuous(limits = c(0, 900), breaks = seq(0,900,100))+
-  scale_fill_manual(name="Province")+
+  scale_colour_colorblind(name="Province")+
   scale_x_date(date_breaks="1 day",date_labels="%b %d")+
   labs(y="\n Total number of cumulative tests per 100,000 population \n by province", x="")+
   theme(panel.background = element_rect(fill = "white", colour = "white"),
