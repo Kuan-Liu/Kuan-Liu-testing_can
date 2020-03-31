@@ -581,7 +581,7 @@ ggplot(new.testing_cum, aes(x = Rank, group = Province,
 - [Ontario testing data to date] https://www.ontario.ca/page/2019-novel-coronavirus
 - [British Columbia testing data to date] http://www.bccdc.ca/about/news-stories/stories/2020/information-on-novel-coronavirus
 - [Alberta testing data to date] https://www.alberta.ca/covid-19-alberta-data.aspx
-- [Saskatchewan testing data to date] https://www.saskatchewan.ca/government/health-care-administration-and-provider-resources/treatment-procedures-and-guidelines/emerging-public-health-issues/2019-novel-coronavirus/cases-and-risk-of-covid-19-in-saskatchewan
+- [Saskatchewan testing data to date] https://www.saskatchewan.ca/government/health-care-administration-and-provider-resources/treatment-procedures-and-guidelines/emerging-public-health-issues/2019-novel-coronavirus/cases-and-risk-of-covid-19-in-saskatchewan()
 - [Manitoba testing data to date] https://www.gov.mb.ca/covid19/
 - [Quebec testing data to date] https://www.quebec.ca/en/health/health-issues/a-z/2019-coronavirus/situation-coronavirus-in-quebec/
 - [Newfoundland and Labrador testing data to date] https://www.gov.nl.ca/covid-19/
