@@ -8,6 +8,7 @@ knit: (function(input_file, encoding) {
 author: 
 - "Kuan Liu, kuan.liu@mail.utoronto.ca"
 - "Alexandra Bushby, alex.bushby@mail.utoronto.ca"
+- "Thai-Son Tang, thaison.tang@mail.utoronto.ca"
 
 output:
   html_document:
