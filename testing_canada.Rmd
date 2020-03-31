@@ -188,12 +188,12 @@ tmap_arrange(map_test, map_case,map_test_p, map_case_p,nrow=2,ncol=2)
 
 ```
 
-### 2.3.1 Estimated Test-Case Ratio
+### 2.3 Estimated Test-Case Ratio
 We define the test-case ratio (TCR) as
 $$
 TCR= \frac{\text{Total number of postive cases}}{\text{Total number of tests completed}},
 $$
-which is also known as the portion of positives cases. For provinces and territories that reported total number of tests including under investigation tests. The demoninator has be asjusted to inclunde only the completed, results known tests.
+which is also known as the proportion of positives cases. For provinces and territories that reported total number of tests including under investigation tests. The demoninator has be asjusted to inclunde only the completed, results known tests.
 
 ```{r echo=FALSE,results='hide',message = FALSE, warning = FALSE}
 library(gridExtra)
@@ -315,7 +315,6 @@ p_testcum
 p_testcump
 ```
 
-
 ```{r echo=FALSE}
 
 testing_cum2<-subset(testing_cum, Province %in% c("NU","YT","NT") & dateformat > as.Date("2020-03-16"))
@@ -365,6 +364,61 @@ cowplot::plot_grid(p_testcumt, p_testcumpt, nrow=2, rel_heights = c(0.5,0.5), al
 
 ```
 
+### 3.1 Animated testing trend overtime
+
+```{r echo=FALSE}
+library(gganimate)
+library(devtools)
+library(reshape2)
+
+## bar plot on testing for different Provinces/Territories
+### turning "NA" into 0
+testing_cum[is.na(testing_cum)] <- 0
+### adding a column of ranks for each day:
+new.testing_cum <- testing_cum %>%
+  group_by(dateformat) %>%
+  # The * 1 makes it possible to have non-integer ranks while sliding
+  mutate(Rank = rank(-cumulative),
+         Value_rel = cumulative/cumulative[Rank == 1],
+         Value_lbl = paste0(" ", round(cumulative))) %>%
+  group_by(Province) %>% 
+  ungroup()
+
+ggplot(new.testing_cum, aes(x = Rank, group = Province, 
+                fill = as.factor(Province), colour =  as.factor(Province))) +
+  geom_tile(aes(y = cumulative/2,
+                height = cumulative,
+                width = 0.9), alpha = 0.8, colour =  NA) +
+  scale_color_manual(values=c("red",teamcolour),aesthetics = c("colour", "fill")) +
+  geom_text(aes(y = 0, label = paste(Province, " ")), vjust = 0.2, hjust = 1) +
+  geom_text(aes(y = cumulative, label = Value_lbl, hjust=0)) +
+  coord_flip(clip = "off", expand = FALSE) +
+  scale_y_continuous(labels = scales::comma) +
+  scale_x_reverse() +
+  guides(color =FALSE, fill = FALSE) +
+  theme(axis.line=element_blank(),
+        axis.text.x=element_blank(),
+        axis.text.y=element_blank(),
+        axis.ticks=element_blank(),
+        axis.title.x=element_blank(),
+        axis.title.y=element_blank(),
+        legend.position="none",
+        panel.background=element_blank(),
+        panel.border=element_blank(),
+        panel.grid.major=element_blank(),
+        panel.grid.minor=element_blank(),
+        panel.grid.major.x = element_line( size=.1, color="grey" ),
+        panel.grid.minor.x = element_line( size=.1, color="grey" ),
+        plot.title=element_text(size=25, hjust=0.5, face="bold", colour="grey", vjust=-1),
+        plot.subtitle=element_text(size=15, hjust=0.5, face="italic", color="black"),
+        plot.caption =element_text(size=8, hjust=0.5, face="italic", color="grey"),
+        plot.background=element_blank(),
+       plot.margin = margin(2,2, 2, 4, "cm")) + 
+  gganimate::transition_states(dateformat, transition_length = 8, state_length = 8) +
+  view_follow(fixed_x = TRUE)  +
+  labs(subtitle = 'Total number of cumulative tests \n by province and territory \n {closest_state}')
+```
+
 ## 4. Tests completed per day 
 
 - **Highlights**
@@ -380,7 +434,6 @@ The number of tests completed on March 25 in Ontario
 = the number of tests cumulative tests reported on March 26 in Ontario - the number of tests cumulative tests reported on March 25 in Ontario = 38550 - 	35635 = 2915.
 <!-- made error reported alberta instead of ontario -->
 ```{r echo=FALSE}
-library(dplyr)
 
 #lead difference on cumulative tests between two consecutive dates within each province;
 testing_cum <- testing_cum %>%
@@ -401,7 +454,6 @@ topp<-ggplot(testing_cum_top, aes(x=dateformat, y=est_daily2, colour=Province)) 
   scale_color_manual(values=teamcolour_province[c(1,2,7,9)])+
   scale_x_date(date_breaks="1 day",date_labels="%b %d", 
                limits = c(min(testing_cum2$dateformat), max(testing_cum2$dateformat) + 0.25)) +
-  geom_hline(yintercept=1000, linetype="dashed", color = "black") +
   geom_hline(yintercept=3000, linetype="dashed", color = "black") +
   geom_hline(yintercept=5000, linetype="dashed", color = "black") +
   labs(y="\n Total number of completed tests per day by province")+
@@ -478,9 +530,6 @@ geom_line(data=testing_cumt[!is.na(testing_cumt$est_daily2),],size = 1)+geom_poi
   
 ```{r echo=FALSE}
 
-library(devtools)
-library(reshape2)
-
 testprop<-data.frame(testing_todate[,1],round(testing_todate[,4]/testing_todate[,5]*100,1),round(testing_todate[,3]/testing_todate[,5]*100,1),round(testing_todate[,2]/testing_todate[,5]*100,1))
 names(testprop)<-c("province","pending","negative","positive")
 
@@ -502,55 +551,6 @@ ggplot(testprop_plot, aes(x = province, y = value, fill = variable, label = valu
         panel.grid.major.x = element_line(colour = "grey94")) + 
   guides(fill = guide_legend(reverse=TRUE))
 
-```
-
-```{r echo=FALSE}
-library(gganimate)
-## bar plot on testing for different Provinces/Territories
-### turning "NA" into 0
-testing_cum[is.na(testing_cum)] <- 0
-### adding a column of ranks for each day:
-new.testing_cum <- testing_cum %>%
-  group_by(dateformat) %>%
-  # The * 1 makes it possible to have non-integer ranks while sliding
-  mutate(Rank = rank(-cumulative),
-         Value_rel = cumulative/cumulative[Rank == 1],
-         Value_lbl = paste0(" ", round(cumulative))) %>%
-  group_by(Province) %>% 
-  ungroup()
-
-ggplot(new.testing_cum, aes(x = Rank, group = Province, 
-                fill = as.factor(Province), color = as.factor(Province))) +
-  geom_tile(aes(y = cumulative/2,
-                height = cumulative,
-                width = 0.9), alpha = 0.8, color = NA) +
-  geom_text(aes(y = 0, label = paste(Province, " ")), vjust = 0.2, hjust = 1) +
-  geom_text(aes(y = cumulative, label = Value_lbl, hjust=0)) +
-  coord_flip(clip = "off", expand = FALSE) +
-  scale_y_continuous(labels = scales::comma) +
-  scale_x_reverse() +
-  guides(color = FALSE, fill = FALSE) +
-  theme(axis.line=element_blank(),
-        axis.text.x=element_blank(),
-        axis.text.y=element_blank(),
-        axis.ticks=element_blank(),
-        axis.title.x=element_blank(),
-         axis.title.y=element_blank(),
-        legend.position="none",
-        panel.background=element_blank(),
-        panel.border=element_blank(),
-        panel.grid.major=element_blank(),
-        panel.grid.minor=element_blank(),
-        panel.grid.major.x = element_line( size=.1, color="grey" ),
-        panel.grid.minor.x = element_line( size=.1, color="grey" ),
-        plot.title=element_text(size=25, hjust=0.5, face="bold", colour="grey", vjust=-1),
-        plot.subtitle=element_text(size=18, hjust=0.5, face="italic", color="grey"),
-        plot.caption =element_text(size=8, hjust=0.5, face="italic", color="grey"),
-        plot.background=element_blank(),
-       plot.margin = margin(2,2, 2, 4, "cm")) + 
-  gganimate::transition_states(dateformat, transition_length = 8, state_length = 4) +
-  view_follow(fixed_x = TRUE)  +
-  labs(subtitle = 'Total number of cumulative tests \n by province and territory \n {closest_state}')
 ```
 
 
