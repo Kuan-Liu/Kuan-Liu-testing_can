@@ -207,3 +207,4 @@ date_testing	province	cumulative_testing	census_population
 30-03-2020	NT	833	44826
 30-03-2020	NU	259	38780
 30-03-2020	YT	603	40854
+31-03-2020			
