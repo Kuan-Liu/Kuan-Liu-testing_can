@@ -60,9 +60,9 @@ Data used in this repostory are extracted from the data speardsheet posted by th
 ### 2.1 Total number of tests to date by province and territory
 
 - **Highlights**
-  - **Alberta, British Columbia and Saskatchewan are the top three provinces ranking by the number of tests per 100,000 population.**
-  - **Quebec has rapidly increased its testing capacity. The total number of tests per 100,000 population has increased to 862 (top 2) as of Mar 31, 2020 comparing to 365 on Mar 25, 2020.**
-  - **Northwest territories and Yukon reported over 1000 tests per 100,000 population, highest in Canada.**
+  - **Alberta, Quebec and British Columbia are the top three provinces ranking by the number of tests per 100,000 population.**
+  - **Quebec has rapidly increased its testing capacity. The total number of tests per 100,000 population has increased to 889 (top 2) as of Apr 1, 2020, comparing to 365 on Mar 25, 2020.**
+  - **Northwest territories and Yukon reported over 1500 tests per 100,000 population, highest in Canada.**
 
 ```{r echo=FALSE}
 #getting a pretty pyramid plot;
@@ -255,6 +255,10 @@ ggplot(testing_todate, aes(x=total_adjp, y=`Total cases per 100,000`, colour=Pro
   - **It seems Ontario is falling slight behind on the testing capacity per capita. **
 
 ```{r echo=FALSE}
+library(gganimate)
+library(devtools)
+library(reshape2)
+
 testing_cum <- read.table("C:/Users/kuan liu/Dropbox (Personal)/STAT_consulting/Bayesiantest/Kuan-Liu-testing_can/Kuan-Liu-testing_can/testing_cumulative.txt", header=TRUE, sep="\t")
 
 # for Alex's purposes:
@@ -263,6 +267,56 @@ testing_cum <- read.table("C:/Users/kuan liu/Dropbox (Personal)/STAT_consulting/
 names(testing_cum)<-c("dateformat","Province","cumulative","population")
 testing_cum$dateformat<-chron(as.character(testing_cum$dateformat),format="d-m-y",out.format="month-d-y")
 testing_cum$dateformat<-as.Date(testing_cum$dateformat)
+
+## bar plot on testing for different Provinces/Territories
+### turning "NA" into 0
+testing_cum[is.na(testing_cum)] <- 0
+### adding a column of ranks for each day:
+new.testing_cum <- testing_cum %>%
+  group_by(dateformat) %>%
+  # The * 1 makes it possible to have non-integer ranks while sliding
+  mutate(Rank = rank(-cumulative),
+         Value_rel = cumulative/cumulative[Rank == 1],
+         Value_lbl = paste0(" ", round(cumulative))) %>%
+  group_by(Province) %>% 
+  ungroup()
+
+ggplot(new.testing_cum, aes(x = Rank, group = Province, 
+                fill = as.factor(Province), colour =  as.factor(Province))) +
+  geom_tile(aes(y = cumulative/2,
+                height = cumulative,
+                width = 0.9), alpha = 0.8, colour =  NA) +
+  scale_color_manual(values=c(teamcolour),aesthetics = c("colour", "fill")) +
+  geom_text(aes(y = 0, label = paste(Province, " ")), vjust = 0.2, hjust = 1) +
+  geom_text(aes(y = cumulative, label = Value_lbl, hjust=0)) +
+  coord_flip(clip = "off", expand = FALSE) +
+  scale_y_continuous(labels = scales::comma) +
+  scale_x_reverse() +
+  guides(color =FALSE, fill = FALSE) +
+  theme(axis.line=element_blank(),
+        axis.text.x=element_blank(),
+        axis.text.y=element_blank(),
+        axis.ticks=element_blank(),
+        axis.title.x=element_blank(),
+        axis.title.y=element_blank(),
+        legend.position="none",
+        panel.background=element_blank(),
+        panel.border=element_blank(),
+        panel.grid.major=element_blank(),
+        panel.grid.minor=element_blank(),
+        panel.grid.major.x = element_line( size=.1, color="grey" ),
+        panel.grid.minor.x = element_line( size=.1, color="grey" ),
+        plot.title=element_text(size=25, hjust=0.5, face="bold", colour="grey", vjust=-1),
+        plot.subtitle=element_text(size=15, hjust=0.5, face="italic", color="black"),
+        plot.caption =element_text(size=8, hjust=0.5, face="italic", color="grey"),
+        plot.background=element_blank(),
+       plot.margin = margin(1,2, 1, 2, "cm")) + 
+  gganimate::transition_states(dateformat, transition_length = 8, state_length = 8) +
+  view_follow(fixed_x = TRUE)  +
+  labs(subtitle = 'Total number of cumulative tests \n by province and territory \n {closest_state}')
+```
+
+```{r echo=FALSE}
 
 testing_cum2<-subset(testing_cum, Province %in% c("AB","BC","MB","NB","NL","NS","ON","PE","QC","SK"))
 
@@ -295,7 +349,7 @@ testprop_cum2<-subset(testprop_cum, Province %in% c("AB","BC","MB","NB","NL","NS
 
 p_testcump<-ggplot(testprop_cum2, aes(x=dateformat, y=cumulative_p, colour=Province)) +
 geom_line(size = 1)+geom_point()+
-  geom_hline(yintercept=590, linetype="dashed", color = "black") +
+  # geom_hline(yintercept=590, linetype="dashed", color = "black") +
   # geom_text(x=as.Date("2020-03-16"),y=510,label="Mar 28 National est.",color="black")+
   scale_y_continuous(limits = c(0, 1400), breaks = seq(0,1400,100))+
   scale_color_manual(values=teamcolour_province)+
@@ -366,66 +420,12 @@ cowplot::plot_grid(p_testcumt, p_testcumpt, nrow=2, rel_heights = c(0.5,0.5), al
 
 ```
 
-### 3.1 Animated testing trend overtime
 
-```{r echo=FALSE}
-library(gganimate)
-library(devtools)
-library(reshape2)
-
-## bar plot on testing for different Provinces/Territories
-### turning "NA" into 0
-testing_cum[is.na(testing_cum)] <- 0
-### adding a column of ranks for each day:
-new.testing_cum <- testing_cum %>%
-  group_by(dateformat) %>%
-  # The * 1 makes it possible to have non-integer ranks while sliding
-  mutate(Rank = rank(-cumulative),
-         Value_rel = cumulative/cumulative[Rank == 1],
-         Value_lbl = paste0(" ", round(cumulative))) %>%
-  group_by(Province) %>% 
-  ungroup()
-
-ggplot(new.testing_cum, aes(x = Rank, group = Province, 
-                fill = as.factor(Province), colour =  as.factor(Province))) +
-  geom_tile(aes(y = cumulative/2,
-                height = cumulative,
-                width = 0.9), alpha = 0.8, colour =  NA) +
-  scale_color_manual(values=c(teamcolour),aesthetics = c("colour", "fill")) +
-  geom_text(aes(y = 0, label = paste(Province, " ")), vjust = 0.2, hjust = 1) +
-  geom_text(aes(y = cumulative, label = Value_lbl, hjust=0)) +
-  coord_flip(clip = "off", expand = FALSE) +
-  scale_y_continuous(labels = scales::comma) +
-  scale_x_reverse() +
-  guides(color =FALSE, fill = FALSE) +
-  theme(axis.line=element_blank(),
-        axis.text.x=element_blank(),
-        axis.text.y=element_blank(),
-        axis.ticks=element_blank(),
-        axis.title.x=element_blank(),
-        axis.title.y=element_blank(),
-        legend.position="none",
-        panel.background=element_blank(),
-        panel.border=element_blank(),
-        panel.grid.major=element_blank(),
-        panel.grid.minor=element_blank(),
-        panel.grid.major.x = element_line( size=.1, color="grey" ),
-        panel.grid.minor.x = element_line( size=.1, color="grey" ),
-        plot.title=element_text(size=25, hjust=0.5, face="bold", colour="grey", vjust=-1),
-        plot.subtitle=element_text(size=15, hjust=0.5, face="italic", color="black"),
-        plot.caption =element_text(size=8, hjust=0.5, face="italic", color="grey"),
-        plot.background=element_blank(),
-       plot.margin = margin(2,2, 2, 4, "cm")) + 
-  gganimate::transition_states(dateformat, transition_length = 8, state_length = 8) +
-  view_follow(fixed_x = TRUE)  +
-  labs(subtitle = 'Total number of cumulative tests \n by province and territory \n {closest_state}')
-```
 
 ## 4. Tests completed per day 
 
 - **Highlights**
   - **Quebec has increased its testing capacity on March 22, 2020 to allow the direct inclusion of hospital laboratories' testing results. This explains the observed dramatic increase on the number of tests completed on March 24, 2020. It's likely these additional tests reported on that day were completed over the past two days.**
-  - **Given the most recent data, Quebec completes on average 7,000 tests per day. Ontario, British Columbia and Alberta complete on average 2,000 to 3,000 tests per day.**
   - **The number of tests completed per day does NOT directly reflect regional testing capacity. Provinces and territories with small number of COVID-19 cases are expected to complete less tests per day.**
 
 
@@ -448,7 +448,7 @@ testing_cum$est_daily<-testing_cum$lead_value - testing_cum$cumulative
 testing_cum$est_daily2<-ifelse(testing_cum$est_daily<=0,NA, testing_cum$est_daily)
 
 #Province plot;
-testing_cum2<-subset(testing_cum, Province %in% c("AB","BC","MB","NB","NL","NS","ON","PE","QC","SK")& dateformat > as.Date("2020-03-19") & dateformat < as.Date("2020-03-31"))
+testing_cum2<-subset(testing_cum, Province %in% c("AB","BC","MB","NB","NL","NS","ON","PE","QC","SK")& dateformat > as.Date("2020-03-19") & dateformat < as.Date("2020-04-01"))
 
 testing_cum_top<-subset(testing_cum2, Province %in% c("AB","BC","ON","QC"))
 
@@ -502,7 +502,7 @@ grid.arrange(topp, botp, nrow=1,widths = c(0.53,0.47))
 
 
 #Territory plot;
-testing_cumt<-subset(testing_cum, Province %in% c("NU","YT","NT") & dateformat > as.Date("2020-03-19") & dateformat < as.Date("2020-03-31"))
+testing_cumt<-subset(testing_cum, Province %in% c("NU","YT","NT") & dateformat > as.Date("2020-03-19") & dateformat < as.Date("2020-04-01"))
 
 ggplot(testing_cumt, aes(x=dateformat, y=est_daily2, colour=Province)) +
 geom_line(data=testing_cumt[!is.na(testing_cumt$est_daily2),],size = 1)+geom_point()+
@@ -530,8 +530,8 @@ geom_line(data=testing_cumt[!is.na(testing_cumt$est_daily2),],size = 1)+geom_poi
 
 - **Highlights**
   - **Nunavut has no confirmed case yet.**
-  - **Newfoundland and Labrador has the highest proportion of positive tests (5.9%). This can be interpreted as for every 100 tests completed (with known results) in Newfoundland and Labrador, we expect around 6 of them to be postive.**
-  - **There appears to be a back log of test reporting in Prince Edward Island. HThe back log in Ontario is observed to be decreasing. The proportion of pending tests in Ontario on Mar 31, 2020 is 8.3% comparing to the same proportion on Mar 25, 2020 at 29.4%.**
+  - **Newfoundland and Labrador has the highest proportion of positive tests (6.2%). This can be interpreted as for every 100 tests completed (with known results) in Newfoundland and Labrador, we expect around 6 of them to be postive.**
+  - **There appears to be a back log of test reporting in Prince Edward Island and Nunvaut. HThe back log in Ontario is observed to be decreasing. The proportion of pending tests in Ontario has reduced to 5.4% comparing to the same proportion on Mar 25, 2020 at 29.4%.**
   
 ```{r echo=FALSE}
 
