@@ -61,7 +61,7 @@ Data used in this repostory are extracted from the data speardsheet posted by th
 
 - **Highlights**
   - **Alberta, Quebec and British Columbia are the top three provinces ranking by the number of tests per 100,000 population.**
-  - **Quebec has rapidly increased its testing capacity. The total number of tests per 100,000 population has increased to 936 as of Apr 2, 2020, comparing to 365 on Mar 25, 2020.**
+  - **Quebec has rapidly increased its testing capacity. The total number of tests per 100,000 population has increased to 1035 as of Apr 3, 2020, comparing to 365 on Mar 25, 2020.**
   - **Northwest territories and Yukon reported over 1500 tests per 100,000 population, highest in Canada.**
 
 ```{r echo=FALSE}
@@ -195,6 +195,8 @@ TCR= \frac{\text{Total number of postive cases}}{\text{Total number of tests com
 $$
 which is also known as the proportion of positives cases. For provinces and territories that reported total number of tests including under investigation tests. The demoninator has be asjusted to inclunde only the completed, results known tests.
 
+**Interpretation: Provinces and territories above the national line demonstrate higher proportion of tested inidividuals being postive - individuals tested in these areas are relatively more likely to be positive; Similarly, provinces and territories below the national line demonstrate lower proportion of tested individuals being positive - individuals tested in these areas are relatively less likely to be positive.**
+
 ```{r echo=FALSE,results='hide',message = FALSE, warning = FALSE}
 library(gridExtra)
 library(ggthemes)
@@ -254,7 +256,7 @@ ggplot(testing_todate, aes(x=total_adjp, y=`Total cases per 100,000`, colour=Pro
   - **Alberta, Ontario, British Columbia and Quebec are the top 4 provinces ranked by the total number of cumulative tests with Quebec as the leading province**
   - **It seems Ontario is falling slight behind on the testing capacity per capita. **
 
-```{r echo=FALSE}
+```{r echo=FALSE,message = FALSE, warning = FALSE}
 library(gganimate)
 library(devtools)
 library(reshape2)
@@ -322,7 +324,7 @@ testing_cum2<-subset(testing_cum, Province %in% c("AB","BC","MB","NB","NL","NS",
 
 p_testcum<-ggplot(testing_cum2, aes(x=dateformat, y=cumulative, colour=Province)) +
 geom_line(size = 1)+geom_point()+
-  scale_y_continuous(limits = c(0, 80000), breaks = seq(0,80000,5000))+
+  scale_y_continuous(limits = c(0, 90000), breaks = seq(0,90000,5000))+
   scale_color_manual(values=teamcolour_province)+
   # scale_colour_brewer(palette="Spectral",direction=-1)+
   scale_x_date(date_breaks="1 day",date_labels="%b %d", 
@@ -351,7 +353,7 @@ p_testcump<-ggplot(testprop_cum2, aes(x=dateformat, y=cumulative_p, colour=Provi
 geom_line(size = 1)+geom_point()+
   # geom_hline(yintercept=590, linetype="dashed", color = "black") +
   # geom_text(x=as.Date("2020-03-16"),y=510,label="Mar 28 National est.",color="black")+
-  scale_y_continuous(limits = c(0, 1400), breaks = seq(0,1400,100))+
+  scale_y_continuous(limits = c(0, 1600), breaks = seq(0,1600,100))+
   scale_color_manual(values=teamcolour_province)+
   scale_x_date(date_breaks="1 day",date_labels="%b %d")+
   labs(y="\n Total number of cumulative tests per 100,000 population \n by province", x="")+
@@ -448,7 +450,7 @@ testing_cum$est_daily<-testing_cum$lead_value - testing_cum$cumulative
 testing_cum$est_daily2<-ifelse(testing_cum$est_daily<=0,NA, testing_cum$est_daily)
 
 #Province plot;
-testing_cum2<-subset(testing_cum, Province %in% c("AB","BC","MB","NB","NL","NS","ON","PE","QC","SK")& dateformat > as.Date("2020-03-19") & dateformat < as.Date("2020-04-02"))
+testing_cum2<-subset(testing_cum, Province %in% c("AB","BC","MB","NB","NL","NS","ON","PE","QC","SK")& dateformat > as.Date("2020-03-19") & dateformat < as.Date("2020-04-03"))
 
 testing_cum_top<-subset(testing_cum2, Province %in% c("AB","BC","ON","QC"))
 
@@ -502,7 +504,7 @@ grid.arrange(topp, botp, nrow=1,widths = c(0.53,0.47))
 
 
 #Territory plot;
-testing_cumt<-subset(testing_cum, Province %in% c("NU","YT","NT") & dateformat > as.Date("2020-03-19") & dateformat < as.Date("2020-04-02"))
+testing_cumt<-subset(testing_cum, Province %in% c("NU","YT","NT") & dateformat > as.Date("2020-03-19") & dateformat < as.Date("2020-04-03"))
 
 ggplot(testing_cumt, aes(x=dateformat, y=est_daily2, colour=Province)) +
 geom_line(data=testing_cumt[!is.na(testing_cumt$est_daily2),],size = 1)+geom_point()+
@@ -531,7 +533,7 @@ geom_line(data=testing_cumt[!is.na(testing_cumt$est_daily2),],size = 1)+geom_poi
 - **Highlights**
   - **Nunavut has no confirmed case yet.**
   - **Quebec has the highest proportion of positive tests (6.9%).**
-  - **There appears to be a back log of test reporting in Prince Edward Island, Northwest Territory and Nunvaut. The back log in Ontario is observed to be decreasing. The proportion of pending tests in Ontario has reduced significantly, at 3.3% now comparing to the same proportion on Mar 25, 2020 at 29.4%.**
+  - **There appears to be a back log of test reporting in Prince Edward Island and Nunvaut. The back log in Ontario is observed to be cleared. The proportion of pending tests in Ontario has reduced significantly, at 1.9% now comparing to the same proportion on Mar 25, 2020 at 29.4%.**
   
 ```{r echo=FALSE}
 
