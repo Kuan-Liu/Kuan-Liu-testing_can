@@ -65,7 +65,7 @@ Data used in this repostory are extracted from the data speardsheet posted by th
 ### 2.1 Total number of tests to date by province and territory
 
 - **Highlights**
-  - **Alberta, Quebec and British Columbia are the top three provinces ranking by the number of tests per 100,000 population.**
+  - **Alberta, Quebec and Saskatchewan are the top three provinces ranking by the number of tests per 100,000 population.**
   - **Quebec has rapidly increased its testing capacity. The total number of tests per 100,000 population has increased to 1109 as of Apr 4, 2020, comparing to 365 on Mar 25, 2020.**
   - **Northwest territories and Yukon reported over 1500 tests per 100,000 population, highest in Canada.**
 
@@ -510,7 +510,7 @@ testing_cumt<-subset(testing_cum, Province %in% c("NU","YT","NT") & dateformat >
 
 ggplot(testing_cumt, aes(x=dateformat, y=est_daily2, colour=Province)) +
 geom_line(data=testing_cumt[!is.na(testing_cumt$est_daily2),],size = 1)+geom_point()+
-  scale_y_continuous(limits = c(0, 500), breaks = seq(0,500,50))+
+  scale_y_continuous(limits = c(0, 300), breaks = seq(0,300,50))+
   scale_color_manual(values=teamcolour_territory)+
   scale_x_date(date_breaks="1 day",date_labels="%b %d")+
   labs(y="\n Total number of completed tests per day by territory", x="")+
