@@ -276,6 +276,7 @@ names(testing_cum)<-c("dateformat","Province","cumulative","population")
 testing_cum$dateformat<-chron(as.character(testing_cum$dateformat),format="d-m-y",out.format="month-d-y")
 testing_cum$dateformat<-as.Date(testing_cum$dateformat)
 
+  
 ## bar plot on testing for different Provinces/Territories
 ### turning "NA" into 0
 testing_cum[is.na(testing_cum)] <- 0
@@ -289,7 +290,7 @@ new.testing_cum <- testing_cum %>%
   group_by(Province) %>% 
   ungroup()
 
-ggplot(new.testing_cum, aes(x = Rank, group = Province, 
+p1<-ggplot(new.testing_cum, aes(x = Rank, group = Province, 
                 fill = as.factor(Province), colour =  as.factor(Province))) +
   geom_tile(aes(y = cumulative/2,
                 height = cumulative,
@@ -322,6 +323,59 @@ ggplot(new.testing_cum, aes(x = Rank, group = Province,
   gganimate::transition_states(dateformat, transition_length = 8, state_length = 8) +
   view_follow(fixed_x = TRUE)  +
   labs(subtitle = 'Total number of cumulative tests \n by province and territory \n {closest_state}')
+
+#plot of per capita;
+testingprop_cum<-data.frame(testing_cum[,1:2],round(testing_cum[,3]/testing_cum[,4]*100000,0))
+names(testingprop_cum)<-c("dateformat","Province","cumulativecapita")
+## bar plot on testing for different Provinces/Territories
+### turning "NA" into 0
+testingprop_cum[is.na(testingprop_cum)] <- 0
+### adding a column of ranks for each day:
+new.testingprop_cum <- testingprop_cum %>%
+  group_by(dateformat) %>%
+  # The * 1 makes it possible to have non-integer ranks while sliding
+  mutate(Rank = rank(-cumulativecapita),
+         Value_rel = cumulativecapita/cumulativecapita[Rank == 1],
+         Value_lbl = paste0(" ", round(cumulativecapita))) %>%
+  group_by(Province) %>% 
+  ungroup()
+
+p2<-ggplot(new.testingprop_cum, aes(x = Rank, group = Province, 
+                fill = as.factor(Province), colour =  as.factor(Province))) +
+  geom_tile(aes(y = cumulativecapita/2,
+                height = cumulativecapita,
+                width = 0.9), alpha = 0.8, colour =  NA) +
+  scale_color_manual(values=c(teamcolour),aesthetics = c("colour", "fill")) +
+  geom_text(aes(y = 0, label = paste(Province, " ")), vjust = 0.2, hjust = 1) +
+  geom_text(aes(y = cumulativecapita, label = Value_lbl, hjust=0)) +
+  coord_flip(clip = "off", expand = FALSE) +
+  scale_y_continuous(labels = scales::comma) +
+  scale_x_reverse() +
+  guides(color =FALSE, fill = FALSE) +
+  theme(axis.line=element_blank(),
+        axis.text.x=element_blank(),
+        axis.text.y=element_blank(),
+        axis.ticks=element_blank(),
+        axis.title.x=element_blank(),
+        axis.title.y=element_blank(),
+        legend.position="none",
+        panel.background=element_blank(),
+        panel.border=element_blank(),
+        panel.grid.major=element_blank(),
+        panel.grid.minor=element_blank(),
+        panel.grid.major.x = element_line( size=.1, color="grey" ),
+        panel.grid.minor.x = element_line( size=.1, color="grey" ),
+        plot.title=element_text(size=25, hjust=0.5, face="bold", colour="grey", vjust=-1),
+        plot.subtitle=element_text(size=15, hjust=0.5, face="italic", color="black"),
+        plot.caption =element_text(size=8, hjust=0.5, face="italic", color="grey"),
+        plot.background=element_blank(),
+       plot.margin = margin(1,2, 1, 2, "cm")) + 
+  gganimate::transition_states(dateformat, transition_length = 8, state_length = 8) +
+  view_follow(fixed_x = TRUE)  +
+  labs(subtitle = 'Total number of cumulative tests per 100,000 \n by province and territory \n {closest_state}')
+
+p1
+p2
 ```
 
 ```{r echo=FALSE}
@@ -469,7 +523,7 @@ topp<-ggplot(testing_cum_top, aes(x=dateformat, y=est_daily2, colour=Province)) 
                limits = c(min(testing_cum2$dateformat), max(testing_cum2$dateformat) + 0.25)) +
   geom_hline(yintercept=3000, linetype="dashed", color = "black") +
   geom_hline(yintercept=5000, linetype="dashed", color = "black") +
-  labs(y="\n Total number of completed tests \n per day by province")+
+  labs(y="\n Number of completed tests per day")+
   theme(panel.background = element_rect(fill = "white", colour = "white"),
         panel.grid.major = element_line(colour = "grey95"),
         # panel.grid.minor = element_line(colour = "grey95"), 
@@ -489,7 +543,7 @@ testing_cum_bot<-subset(testing_cum2, Province %in% c("MB","NB","NL","NS","PE","
 botp<-ggplot(testing_cum_bot, aes(x=dateformat, y=est_daily2, colour=Province)) +
   geom_point()+
   geom_line(data=testing_cum_bot[!is.na(testing_cum_bot$est_daily2),],size = 1)+
-  labs(y="\n Total number of completed tests \n per day by province")+
+  labs(y="\n Number of completed tests per day")+
   scale_y_continuous(limits = c(0, 1800), breaks = seq(0,1800,200))+
   scale_color_manual(values=teamcolour_province[c(3,4,5,6,8,10)])+
   scale_x_date(date_breaks="1 day",date_labels="%b %d", 
@@ -507,17 +561,16 @@ botp<-ggplot(testing_cum_bot, aes(x=dateformat, y=est_daily2, colour=Province)) 
         legend.position =  "right") 
 # +geom_dl(aes(label = Province), method = list(dl.trans(x = x + 0.2), "last.qp")) #the end point is not the same having errors.
 
-cowplot::plot_grid(topp, botp, nrow=2, rel_heights = c(0.5,0.5),align = "v")
 
 #Territory plot;
 testing_cumt<-subset(testing_cum, Province %in% c("NU","YT","NT") & dateformat > as.Date("2020-03-19") & dateformat < as.Date("2020-04-08"))
 
-ggplot(testing_cumt, aes(x=dateformat, y=est_daily2, colour=Province)) +
+terr<-ggplot(testing_cumt, aes(x=dateformat, y=est_daily2, colour=Province)) +
 geom_line(data=testing_cumt[!is.na(testing_cumt$est_daily2),],size = 1)+geom_point()+
-  scale_y_continuous(limits = c(0, 300), breaks = seq(0,300,20))+
+  scale_y_continuous(limits = c(0, 300), breaks = seq(0,300,50))+
   scale_color_manual(values=teamcolour_territory)+
   scale_x_date(date_breaks="1 day",date_labels="%b %d")+
-  labs(y="\n Total number of completed tests per day by territory", x="")+
+  labs(y="\n Number of completed tests per day ", x="")+
   theme(panel.background = element_rect(fill = "white", colour = "white"),
         panel.grid.major = element_line(colour = "grey95"),
         #panel.grid.minor = element_line(colour = "grey95"), 
@@ -530,7 +583,7 @@ geom_line(data=testing_cumt[!is.na(testing_cumt$est_daily2),],size = 1)+geom_poi
         axis.title.y = element_text(margin = margin(t = 0, r = 10, b = 0, l = 0))) 
 # + geom_dl(aes(label = Province), method = list(dl.trans(x = x + 0.2), "last.qp"))
 
-
+cowplot::plot_grid(topp, botp, terr, nrow=3,align = "v")
 
 ```
 
