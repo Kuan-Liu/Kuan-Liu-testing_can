@@ -66,8 +66,8 @@ Data used in this repostory are extracted from the data speardsheet posted by th
 
 - **Highlights**
   - **Alberta, Quebec and Saskatchewan are the top three provinces ranking by the number of tests per 100,000 population.**
-  - **Quebec has rapidly increased its testing capacity. The total number of tests per 100,000 population has increased to 1109 as of Apr 4, 2020, comparing to 365 on Mar 25, 2020.**
-  - **Northwest territories and Yukon reported over 1500 tests per 100,000 population, highest in Canada.**
+  - **Quebec has rapidly increased its testing capacity. The total number of tests per 100,000 population has increased to 1321 as of Apr 8, 2020, comparing to 365 on Mar 25, 2020.**
+  - **Northwest territories and Yukon reported over 1800 tests per 100,000 population, highest in Canada.**
 
 ```{r echo=FALSE}
 #getting a pretty pyramid plot;
@@ -177,14 +177,14 @@ canada_prov <- readOGR(dsn = "C:/Users/kuan liu/Dropbox (Personal)/STAT_consulti
 canada_prov$id<-c(24, 12, 47, 48, 10, 59, 13, 11, 60, 46, 35, 62, 61)
 testing_data<-merge(canada_prov, mapstat, by="id")
 
-map_test = tm_shape(testing_data)+tm_polygons(col="test",breaks=c(0,1000,10000,50000,100000, Inf),labels = c("<1000", "1000-10000", "10000-50000","50000-100000",">100000"), title=" ",palette ="YlOrRd")+tm_layout(title="Tests", title.size = 1,title.position=c("left","bottom"),legend.position = c(0.73,0.7))
+map_test = tm_shape(testing_data)+tm_polygons(col="test",breaks=c(0,5000,10000,50000,100000, Inf),labels = c("<5000", "5000-10000", "10000-50000","50000-100000",">100000"), title=" ",palette ="YlOrRd")+tm_layout(title="Tests", title.size = 1,title.position=c("left","bottom"),legend.position = c(0.73,0.7))
 
 #map stat can be grouped with fixed breaks or continuous, 
-map_case = tm_shape(testing_data)+tm_polygons(col="case",breaks=c(0,1,100,500,1000,2000,Inf),labels = c("0", "1-100","100-500","500-1000","1000-2000",">2000"),title=" ",palette ="YlOrRd")+tm_layout(title="Cases", title.size = 1,title.position=c("left","bottom"),legend.position =c(0.77,0.67))
+map_case = tm_shape(testing_data)+tm_polygons(col="case",breaks=c(0,1,100,500,1000,2000,5000,Inf),labels = c("0", "1-100","100-500","500-1000","1000-2000","2000-5000",">5000"),title=" ",palette ="YlOrRd")+tm_layout(title="Cases", title.size = 1,title.position=c("left","bottom"),legend.position =c(0.77,0.63))
 
-map_test_p = tm_shape(testing_data)+tm_polygons(col="test_pop",breaks=c(0,500,1000,1500,Inf),labels = c("0-500", "500-1000","1000-1500",">1500"), title=" ",palette ="YlOrRd")+tm_layout(title="Tests per 100,000", title.size = 1,title.position=c("left","bottom"),legend.position =c(0.78,0.76))
+map_test_p = tm_shape(testing_data)+tm_polygons(col="test_pop",breaks=c(500,1000,1500,3000,Inf),labels = c("500-1000","1000-1500","1500-3000",">3000"), title=" ",palette ="YlOrRd")+tm_layout(title="Tests per 100,000", title.size = 1,title.position=c("left","bottom"),legend.position =c(0.78,0.76))
 
-map_case_p = tm_shape(testing_data)+tm_polygons(col="case_pop",breaks=c(0,1,15,30,45,Inf),labels = c("0", "1-15", "15-30","30-45",">45"), title=" ",palette ="YlOrRd")+tm_layout(title="Cases per 100,000", title.size = 1,title.position=c("left","bottom"),legend.position = c(0.84,0.7))
+map_case_p = tm_shape(testing_data)+tm_polygons(col="case_pop",breaks=c(0,1,20,30,40,50,Inf),labels = c("0", "1-20", "20-30","30-40","40-50",">50"), title=" ",palette ="YlOrRd")+tm_layout(title="Cases per 100,000", title.size = 1,title.position=c("left","bottom"),legend.position = c(0.84,0.68))
 
 tmap_arrange(map_test, map_case,map_test_p, map_case_p,nrow=2,ncol=2)
 
@@ -330,7 +330,7 @@ testing_cum2<-subset(testing_cum, Province %in% c("AB","BC","MB","NB","NL","NS",
 
 p_testcum<-ggplot(testing_cum2, aes(x=dateformat, y=cumulative, colour=Province)) +
 geom_line(size = 1)+geom_point()+
-  scale_y_continuous(limits = c(0, 110000), breaks = seq(0,110000,5000))+
+  scale_y_continuous(limits = c(0, 120000), breaks = seq(0,120000,5000))+
   scale_color_manual(values=teamcolour_province)+
   # scale_colour_brewer(palette="Spectral",direction=-1)+
   scale_x_date(date_breaks="1 day",date_labels="%b %d", 
@@ -385,7 +385,7 @@ testing_cum2<-subset(testing_cum, Province %in% c("NU","YT","NT") & dateformat >
 
 p_testcumt<-ggplot(testing_cum2, aes(x=dateformat, y=cumulative, colour=Province)) +
 geom_line(size = 1)+geom_point()+
-  scale_y_continuous(limits = c(0, 1400), breaks = seq(0,1400,200))+
+  scale_y_continuous(limits = c(0, 1500), breaks = seq(0,1500,200))+
   scale_color_manual(values=teamcolour_territory)+
   scale_x_date(date_breaks="1 day",date_labels="%b %d")+
   labs(y="\n Total number of cumulative tests \n by territory", x="")+
@@ -408,7 +408,7 @@ testprop_cum2<-subset(testprop_cum, Province %in% c("NU","YT","NT") & dateformat
 p_testcumpt<-ggplot(testprop_cum2, aes(x=dateformat, y=cumulative_p, colour=Province)) +
 geom_line(size = 1)+geom_point()+
   # geom_hline(yintercept=500, linetype="dashed", color = "black") +
-  scale_y_continuous(limits = c(0, 3100), breaks = seq(0,3100,500))+
+  scale_y_continuous(limits = c(0, 3500), breaks = seq(0,3500,500))+
   scale_color_manual(values=teamcolour_territory)+
   scale_x_date(date_breaks="1 day",date_labels="%b %d")+
   labs(y="\n Total number of cumulative tests \n per 100,000 population by territory", x="")+
@@ -456,7 +456,7 @@ testing_cum$est_daily<-testing_cum$lead_value - testing_cum$cumulative
 testing_cum$est_daily2<-ifelse(testing_cum$est_daily<=0,NA, testing_cum$est_daily)
 
 #Province plot;
-testing_cum2<-subset(testing_cum, Province %in% c("AB","BC","MB","NB","NL","NS","ON","PE","QC","SK")& dateformat > as.Date("2020-03-19") & dateformat < as.Date("2020-04-07"))
+testing_cum2<-subset(testing_cum, Province %in% c("AB","BC","MB","NB","NL","NS","ON","PE","QC","SK")& dateformat > as.Date("2020-03-19") & dateformat < as.Date("2020-04-08"))
 
 testing_cum_top<-subset(testing_cum2, Province %in% c("AB","BC","ON","QC"))
 
@@ -469,7 +469,7 @@ topp<-ggplot(testing_cum_top, aes(x=dateformat, y=est_daily2, colour=Province)) 
                limits = c(min(testing_cum2$dateformat), max(testing_cum2$dateformat) + 0.25)) +
   geom_hline(yintercept=3000, linetype="dashed", color = "black") +
   geom_hline(yintercept=5000, linetype="dashed", color = "black") +
-  labs(y="\n Total number of completed tests per day by province")+
+  labs(y="\n Total number of completed tests \n per day by province")+
   theme(panel.background = element_rect(fill = "white", colour = "white"),
         panel.grid.major = element_line(colour = "grey95"),
         # panel.grid.minor = element_line(colour = "grey95"), 
@@ -489,6 +489,7 @@ testing_cum_bot<-subset(testing_cum2, Province %in% c("MB","NB","NL","NS","PE","
 botp<-ggplot(testing_cum_bot, aes(x=dateformat, y=est_daily2, colour=Province)) +
   geom_point()+
   geom_line(data=testing_cum_bot[!is.na(testing_cum_bot$est_daily2),],size = 1)+
+  labs(y="\n Total number of completed tests \n per day by province")+
   scale_y_continuous(limits = c(0, 1800), breaks = seq(0,1800,200))+
   scale_color_manual(values=teamcolour_province[c(3,4,5,6,8,10)])+
   scale_x_date(date_breaks="1 day",date_labels="%b %d", 
@@ -497,7 +498,7 @@ botp<-ggplot(testing_cum_bot, aes(x=dateformat, y=est_daily2, colour=Province)) 
         panel.grid.major = element_line(colour = "grey95"),
         #panel.grid.minor = element_line(colour = "grey95"), 
         axis.title.x = element_blank(),
-        axis.title.y = element_blank(),
+        # axis.title.y = element_blank(),
         axis.text=element_text(size=11),
         axis.text.x = element_text(angle = 45, hjust = 1),
         legend.background = element_blank(),
@@ -509,11 +510,11 @@ botp<-ggplot(testing_cum_bot, aes(x=dateformat, y=est_daily2, colour=Province)) 
 cowplot::plot_grid(topp, botp, nrow=2, rel_heights = c(0.5,0.5),align = "v")
 
 #Territory plot;
-testing_cumt<-subset(testing_cum, Province %in% c("NU","YT","NT") & dateformat > as.Date("2020-03-19") & dateformat < as.Date("2020-04-07"))
+testing_cumt<-subset(testing_cum, Province %in% c("NU","YT","NT") & dateformat > as.Date("2020-03-19") & dateformat < as.Date("2020-04-08"))
 
 ggplot(testing_cumt, aes(x=dateformat, y=est_daily2, colour=Province)) +
 geom_line(data=testing_cumt[!is.na(testing_cumt$est_daily2),],size = 1)+geom_point()+
-  scale_y_continuous(limits = c(0, 300), breaks = seq(0,300,50))+
+  scale_y_continuous(limits = c(0, 300), breaks = seq(0,300,20))+
   scale_color_manual(values=teamcolour_territory)+
   scale_x_date(date_breaks="1 day",date_labels="%b %d")+
   labs(y="\n Total number of completed tests per day by territory", x="")+
@@ -537,8 +538,8 @@ geom_line(data=testing_cumt[!is.na(testing_cumt$est_daily2),],size = 1)+geom_poi
 
 - **Highlights**
   - **Nunavut has no confirmed case yet.**
-  - **Quebec has the highest proportion of positive tests (8.7%).**
-  - **There appears to be a back log of test reporting in Prince Edward Island and Nunvaut. The back log in Ontario is observed to be cleared. The proportion of pending tests in Ontario has reduced significantly, at 0.8% now comparing to the same proportion on Mar 25, 2020 at 29.4%.**
+  - **Quebec has the highest proportion of positive tests (8.9%).**
+  - **There appears to be a back log of test reporting in Prince Edward Island and Nunvaut. The back log in Ontario is observed to be cleared. The proportion of pending tests in Ontario has reduced significantly, at 1.3% now comparing to the same proportion on Mar 25, 2020 at 29.4%.**
   
 ```{r echo=FALSE}
 
