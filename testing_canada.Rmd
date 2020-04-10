@@ -66,7 +66,7 @@ Data used in this repostory are extracted from the data speardsheet posted by th
 
 - **Highlights**
   - **Alberta, Quebec and Saskatchewan are the top three provinces ranking by the number of tests per 100,000 population.**
-  - **Quebec has rapidly increased its testing capacity. The total number of tests per 100,000 population has increased to 1321 as of Apr 8, 2020, comparing to 365 on Mar 25, 2020.**
+  - **Quebec has rapidly increased its testing capacity. The total number of tests per 100,000 population has increased to 1375 as of Apr 8, 2020, comparing to 365 on Mar 25, 2020.**
   - **Northwest territories and Yukon reported over 1800 tests per 100,000 population, highest in Canada.**
 
 ```{r echo=FALSE}
@@ -591,8 +591,8 @@ cowplot::plot_grid(topp, botp, terr, nrow=3,align = "v")
 
 - **Highlights**
   - **Nunavut has no confirmed case yet.**
-  - **Quebec has the highest proportion of positive tests (8.9%).**
-  - **There appears to be a back log of test reporting in Prince Edward Island and Nunvaut. The back log in Ontario is observed to be cleared. The proportion of pending tests in Ontario has reduced significantly, at 1.3% now comparing to the same proportion on Mar 25, 2020 at 29.4%.**
+  - **Quebec has the highest proportion of positive tests (9.4%).**
+  - **There appears to be a back log of test reporting in Nunvaut. The back log in Ontario is observed to be cleared. The proportion of pending tests in Ontario has reduced significantly, at 1.4% now comparing to the same proportion on Mar 25, 2020 at 29.4%.**
   
 ```{r echo=FALSE}
 
