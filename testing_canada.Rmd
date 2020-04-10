@@ -236,7 +236,7 @@ ggplot(testing_todate, aes(x=total_adjp, y=`Total cases per 100,000`, colour=Pro
   # annotate(geom="text", x=1200, y=22, label="NY state test-case ratio at 35%",
   #             color="blue") +
   scale_x_continuous(limits = c(0, 1700), breaks = seq(0,1700,200))+
-  scale_y_continuous(limits = c(0, 120), breaks = seq(0,120,10))+
+  scale_y_continuous(limits = c(0, 140), breaks = seq(0,140,10))+
   scale_color_manual(values=teamcolour)+
   labs(y="\n Total cases per 100,000 popualtion", x=" \n Total tests per 100,000 population",title = paste("Cases per 100,000 by tests per 100,000, as of ", format(Sys.time(), "%b %d, %Y %X") ))+
   theme(panel.background = element_rect(fill = "white", colour = "white"),
@@ -510,7 +510,7 @@ testing_cum$est_daily<-testing_cum$lead_value - testing_cum$cumulative
 testing_cum$est_daily2<-ifelse(testing_cum$est_daily<=0,NA, testing_cum$est_daily)
 
 #Province plot;
-testing_cum2<-subset(testing_cum, Province %in% c("AB","BC","MB","NB","NL","NS","ON","PE","QC","SK")& dateformat > as.Date("2020-03-19") & dateformat < as.Date("2020-04-08"))
+testing_cum2<-subset(testing_cum, Province %in% c("AB","BC","MB","NB","NL","NS","ON","PE","QC","SK")& dateformat > as.Date("2020-03-19") & dateformat < Sys.Date())
 
 testing_cum_top<-subset(testing_cum2, Province %in% c("AB","BC","ON","QC"))
 
@@ -563,7 +563,7 @@ botp<-ggplot(testing_cum_bot, aes(x=dateformat, y=est_daily2, colour=Province)) 
 
 
 #Territory plot;
-testing_cumt<-subset(testing_cum, Province %in% c("NU","YT","NT") & dateformat > as.Date("2020-03-19") & dateformat < as.Date("2020-04-08"))
+testing_cumt<-subset(testing_cum, Province %in% c("NU","YT","NT") & dateformat > as.Date("2020-03-19") & dateformat < Sys.Date())
 
 terr<-ggplot(testing_cumt, aes(x=dateformat, y=est_daily2, colour=Province)) +
 geom_line(data=testing_cumt[!is.na(testing_cumt$est_daily2),],size = 1)+geom_point()+
