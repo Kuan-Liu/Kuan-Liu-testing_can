@@ -66,7 +66,7 @@ Data used in this repostory are extracted from the data speardsheet posted by th
 
 - **Highlights**
   - **Alberta, Quebec and Saskatchewan are the top three provinces ranking by the number of tests per 100,000 population.**
-  - **Quebec has rapidly increased its testing capacity. The total number of tests per 100,000 population has increased to 1375 as of Apr 8, 2020, comparing to 365 on Mar 25, 2020.**
+  - **Quebec has rapidly increased its testing capacity. The total number of tests per 100,000 population has increased to 1425 as of Apr 10, 2020, comparing to 365 on Mar 25, 2020.**
   - **Northwest territories and Yukon reported over 1800 tests per 100,000 population, highest in Canada.**
 
 ```{r echo=FALSE}
@@ -384,7 +384,7 @@ testing_cum2<-subset(testing_cum, Province %in% c("AB","BC","MB","NB","NL","NS",
 
 p_testcum<-ggplot(testing_cum2, aes(x=dateformat, y=cumulative, colour=Province)) +
 geom_line(size = 1)+geom_point()+
-  scale_y_continuous(limits = c(0, 120000), breaks = seq(0,120000,5000))+
+  scale_y_continuous(limits = c(0, 125000), breaks = seq(0,125000,5000))+
   scale_color_manual(values=teamcolour_province)+
   # scale_colour_brewer(palette="Spectral",direction=-1)+
   scale_x_date(date_breaks="1 day",date_labels="%b %d", 
@@ -591,8 +591,8 @@ cowplot::plot_grid(topp, botp, terr, nrow=3,align = "v")
 
 - **Highlights**
   - **Nunavut has no confirmed case yet.**
-  - **Quebec has the highest proportion of positive tests (9.4%).**
-  - **There appears to be a back log of test reporting in Nunvaut. The back log in Ontario is observed to be cleared. The proportion of pending tests in Ontario has reduced significantly, at 1.4% now comparing to the same proportion on Mar 25, 2020 at 29.4%.**
+  - **Quebec has the highest proportion of positive tests (9.7%).**
+  - **There appears to be a back log of test reporting in Nunvaut. The back log in Ontario is observed to be cleared. The proportion of pending tests in Ontario has reduced significantly, at less than 2% now comparing to the same proportion on Mar 25, 2020 at 29.4%.**
   
 ```{r echo=FALSE}
 
@@ -643,14 +643,14 @@ ggplot(testprop_plot, aes(x = province, y = value, fill = variable, label = valu
 ## Reference
 
 - COVID-19 Canada Open Data Working Group. Epidemiological Data from the COVID-19 Outbreak in Canada. https://github.com/ishaberry/Covid19Canada. (2020-03-25).
-- [National testing data to date] https://www.canada.ca/en/public-health/services/diseases/2019-novel-coronavirus-infection.html and https://www.ctvnews.ca/health/coronavirus/tracking-every-case-of-covid-19-in-canada-1.4852102
+- [National testing data to date] https://www.canada.ca/en/public-health/services/diseases/2019-novel-coronavirus-infection.html
 - [Ontario testing data to date] https://www.ontario.ca/page/2019-novel-coronavirus
 - [British Columbia testing data to date] http://www.bccdc.ca/about/news-stories/stories/2020/information-on-novel-coronavirus
 - [Alberta testing data to date] https://www.alberta.ca/covid-19-alberta-data.aspx
-- [Saskatchewan testing data to date] https://www.saskatchewan.ca/government/health-care-administration-and-provider-resources/treatment-procedures-and-guidelines/emerging-public-health-issues/2019-novel-coronavirus/cases-and-risk-of-covid-19-in-saskatchewan()
-- [Manitoba testing data to date] https://www.gov.mb.ca/covid19/
-- [Quebec testing data to date] https://msss.gouv.qc.ca/professionnels/maladies-infectieuses/coronavirus-2019-ncov/
-- [Newfoundland and Labrador testing data to date] https://www.gov.nl.ca/covid-19/
+- [Saskatchewan testing data to date] https://www.saskatchewan.ca/government/health-care-administration-and-provider-resources/treatment-procedures-and-guidelines/emerging-public-health-issues/2019-novel-coronavirus/cases-and-risk-of-covid-19-in-saskatchewan
+- [Manitoba testing data to date] https://www.gov.mb.ca/covid19/updates/index.html
+- [Quebec testing data to date] https://www.quebec.ca/sante/problemes-de-sante/a-z/coronavirus-2019/situation-coronavirus-quebec/#c47900
+- [Newfoundland and Labrador testing data to date] https://covid-19-newfoundland-and-labrador-gnl.hub.arcgis.com/
 - [New Brunswick testing data to date] https://www2.gnb.ca/content/gnb/en/departments/ocmoh/cdc/content/respiratory_diseases/coronavirus.html
 - [Nova Scotia testing data to date] https://novascotia.ca/coronavirus/#cases
 - [Prince Edward Island testing data to date] https://www.princeedwardisland.ca/en/topic/covid-19
