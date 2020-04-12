@@ -236,7 +236,7 @@ ggplot(testing_todate, aes(x=total_adjp, y=`Total cases per 100,000`, colour=Pro
   # annotate(geom="text", x=1200, y=22, label="NY state test-case ratio at 35%",
   #             color="blue") +
   scale_x_continuous(limits = c(0, 1700), breaks = seq(0,1700,200))+
-  scale_y_continuous(limits = c(0, 140), breaks = seq(0,140,10))+
+  scale_y_continuous(limits = c(0, 150), breaks = seq(0,150,10))+
   scale_color_manual(values=teamcolour)+
   labs(y="\n Total cases per 100,000 popualtion", x=" \n Total tests per 100,000 population",title = paste("Cases per 100,000 by tests per 100,000, as of ", format(Sys.time(), "%b %d, %Y %X") ))+
   theme(panel.background = element_rect(fill = "white", colour = "white"),
@@ -384,7 +384,7 @@ testing_cum2<-subset(testing_cum, Province %in% c("AB","BC","MB","NB","NL","NS",
 
 p_testcum<-ggplot(testing_cum2, aes(x=dateformat, y=cumulative, colour=Province)) +
 geom_line(size = 1)+geom_point()+
-  scale_y_continuous(limits = c(0, 125000), breaks = seq(0,125000,5000))+
+  scale_y_continuous(limits = c(0, 130000), breaks = seq(0,130000,5000))+
   scale_color_manual(values=teamcolour_province)+
   # scale_colour_brewer(palette="Spectral",direction=-1)+
   scale_x_date(date_breaks="1 day",date_labels="%b %d", 
@@ -439,7 +439,7 @@ testing_cum2<-subset(testing_cum, Province %in% c("NU","YT","NT") & dateformat >
 
 p_testcumt<-ggplot(testing_cum2, aes(x=dateformat, y=cumulative, colour=Province)) +
 geom_line(size = 1)+geom_point()+
-  scale_y_continuous(limits = c(0, 1500), breaks = seq(0,1500,200))+
+  scale_y_continuous(limits = c(0, 1600), breaks = seq(0,1600,200))+
   scale_color_manual(values=teamcolour_territory)+
   scale_x_date(date_breaks="1 day",date_labels="%b %d")+
   labs(y="\n Total number of cumulative tests \n by territory", x="")+
@@ -583,7 +583,9 @@ geom_line(data=testing_cumt[!is.na(testing_cumt$est_daily2),],size = 1)+geom_poi
         axis.title.y = element_text(margin = margin(t = 0, r = 10, b = 0, l = 0))) 
 # + geom_dl(aes(label = Province), method = list(dl.trans(x = x + 0.2), "last.qp"))
 
-cowplot::plot_grid(topp, botp, terr, nrow=3,align = "v")
+topp
+botp 
+terr
 
 ```
 
@@ -591,7 +593,7 @@ cowplot::plot_grid(topp, botp, terr, nrow=3,align = "v")
 
 - **Highlights**
   - **Nunavut has no confirmed case yet.**
-  - **Quebec has the highest proportion of positive tests (9.7%).**
+  - **Quebec has the highest proportion of positive tests (9.8%).**
   - **There appears to be a back log of test reporting in Nunvaut. The back log in Ontario is observed to be cleared. The proportion of pending tests in Ontario has reduced significantly, at less than 2% now comparing to the same proportion on Mar 25, 2020 at 29.4%.**
   
 ```{r echo=FALSE}
