@@ -109,36 +109,49 @@ dft <- tibble(
   Territory = testing_todate_plot_t$Territory
   )
 
+library(ggiraph)
+
 cump<-ggplot(dfp, aes(x = forcats::fct_rev(Province), y = Total, fill = Data)) +
-  geom_bar(stat = "identity", position = position_dodge(width=-0.5), width = 0.8, colour="black") +
-  # geom_text(size = 3, stat = 'identity', 
-  #           aes(label=c(testing_todate_p$Total,testing_todate_p$`Total per 100,000 population` ), hjust=c(rep(1.2,10),rep(-0.2,10)))) +
+  geom_bar_interactive(aes(tooltip = c(paste0("Province: ", Province, "\n Count: ", abs(Total)))), 
+                       stat = "identity", 
+                       position = position_dodge(width = -0.5), 
+                       width = 0.8, 
+                       colour = "black") +
   facet_share(~Data, dir = "h", scales = "free", reverse_num = TRUE) +
   coord_flip() + 
   labs(y = "", x = " ", title = paste("As of ", format(Sys.time(), "%b %d, %Y %X"))) +
   scale_fill_manual(values = c("lightblue", "orange"))+
   theme(panel.background = element_rect(fill = "white", colour = "white"),
-        panel.grid.major = element_line(colour = "grey95"),
-        panel.grid.minor = element_line(colour = "grey95"), 
+        panel.grid.major.x = element_line(colour = "grey95"),
+        panel.grid.minor.x = element_line(colour = "grey95"), 
+        panel.grid.major.y = element_line(colour = NA), 
+        panel.grid.minor.y = element_line(colour = NA), 
+        #axis.ticks.y = element_blank(),
         legend.position = "none",
         axis.title = element_text(size=11))
 
 cumt<-ggplot(dft, aes(x = forcats::fct_rev(Territory), y = Total, fill = Data)) +
-  geom_bar(stat = "identity", position = position_dodge(width=-0.5), width = 0.8, colour="black") +
-  # geom_text(size = 3, stat = 'identity', 
-  #           aes(label=c(testing_todate_p$Total,testing_todate_p$`Total per 100,000 population` ), hjust=c(rep(1.2,10),rep(-0.2,10)))) +
+  geom_bar_interactive(aes(tooltip = c(paste0("Territory: ", Territory, "\n Count: ", abs(Total)))), stat = "identity", position = position_dodge(width = -0.5), width = 0.8, colour = "black") +
   facet_share(~Data, dir = "h", scales = "free", reverse_num = TRUE) +
   coord_flip() + 
   labs(y = "", x = " ") +
   scale_fill_manual(values = c("lightblue", "orange"))+
   theme(panel.background = element_rect(fill = "white", colour = "white"),
-        panel.grid.major = element_line(colour = "grey95"),
-        panel.grid.minor = element_line(colour = "grey95"), 
+        panel.grid.major.x = element_line(colour = "grey95"),
+        panel.grid.minor.x = element_line(colour = "grey95"), 
+        panel.grid.major.y = element_line(colour = NA), 
+        panel.grid.minor.y = element_line(colour = NA), 
+        #axis.ticks.y = element_blank(),
         legend.position = "none",
         plot.title = element_blank(),
         axis.title = element_text(size=11))
 
-cowplot::plot_grid(cump, cumt, nrow=2, rel_heights = c(0.7,0.3),align = "v")
+cum.pt <- cowplot::plot_grid(cump, cumt, 
+                             nrow = 2, 
+                             rel_heights = c(0.7,0.3), 
+                             align = "v") 
+
+girafe(code = print(cum.pt))
 
 ```  
 
