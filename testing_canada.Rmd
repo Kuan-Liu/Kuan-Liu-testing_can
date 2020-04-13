@@ -30,11 +30,14 @@ output:
 ```{r setup, echo=FALSE, results='none', message = FALSE, warning = FALSE}
 knitr::opts_chunk$set(message = FALSE, warning = FALSE, fig.align = "center",fig.height = 6, fig.width = 8)
 options(knitr.kable.NA = '-')
-### Here, I'm using packman package to load packages if not currently available 
+```
+
+```{r}
+# required packages:
 require(ggplot2)
-library("knitr")
-library("magick")
-library("chron")
+library(knitr)
+library(magick)
+library(chron)
 library(tidyverse)
 library(ggpol)
 library(dplyr)
@@ -71,29 +74,49 @@ Data used in this repostory are extracted from the data speardsheet posted by th
 
 ```{r echo=FALSE}
 #getting a pretty pyramid plot;
-testing_todate <- read.table("C:/Users/kuan liu/Dropbox (Personal)/STAT_consulting/Bayesiantest/Kuan-Liu-testing_can/Kuan-Liu-testing_can/testing_todate.txt", header=FALSE, sep="\t")
+testing_todate <- read.table("C:/Users/kuan liu/Dropbox (Personal)/STAT_consulting/Bayesiantest/Kuan-Liu-testing_can/Kuan-Liu-testing_can/testing_todate.txt", 
+                             header = FALSE, 
+                             sep = "\t")
 # testing_todate <- read.table("testing_todate.txt", header=FALSE, sep="\t")
-names(testing_todate)[1:7]<-c("Province","Reported Positive","Reported Negative","Reported Pending","Total","Est. Population","Total per 100,000 population")
+names(testing_todate)[1:7]<-c("Province",
+                              "Reported Positive",
+                              "Reported Negative",
+                              "Reported Pending",
+                              "Total",
+                              "Est. Population",
+                              "Total per 100,000 population")
 
-testing_todate_p<-testing_todate[testing_todate$Province %in% c("AB","BC","MB","NB","NL","NS","ON","PE","QC","SK"),]
-testing_todate_t<-testing_todate[testing_todate$Province %in% c("NT","YT","NU"),]
+testing_todate_p<-testing_todate[testing_todate$Province %in% c("AB", "BC", "MB", "NB", "NL", "NS", "ON", "PE", "QC", "SK"),]
+testing_todate_t<-testing_todate[testing_todate$Province %in% c("NT", "YT", "NU"),]
 
 testing_todate_p<-testing_todate_p[order(testing_todate_p$`Total per 100,000 population`, decreasing = TRUE),]
 testing_todate_t<-testing_todate_t[order(testing_todate_t$`Total per 100,000 population`, decreasing = TRUE),]
-names(testing_todate_t)[1:7]<-c("Territory","Reported Positive","Reported Negative","Reported Pending","Total","Est. Population","Total per 100,000 population")
+names(testing_todate_t)[1:7] <- c("Territory",
+                                  "Reported Positive",
+                                  "Reported Negative",
+                                  "Reported Pending",
+                                  "Total",
+                                  "Est. Population",
+                                  "Total per 100,000 population")
 
 # 1.Create Dataset;
-testing_todate_pcum<-data.frame(testing_todate_p$Province, -testing_todate_p$Total, "Total tests")
-testing_todate_pcump<-data.frame(testing_todate_p$Province, testing_todate_p$`Total per 100,000 population`, "Total tests per 100,000 population")
-names(testing_todate_pcum)<-c("Province","Total","Data")
-names(testing_todate_pcump)<-c("Province","Total","Data")
-testing_todate_plot_p<-rbind(testing_todate_pcum,testing_todate_pcump)
+testing_todate_pcum <- data.frame(testing_todate_p$Province, 
+                                  -testing_todate_p$Total, 
+                                  "Total tests")
+testing_todate_pcump <- data.frame(testing_todate_p$Province, 
+                                   testing_todate_p$`Total per 100,000 population`, 
+                                   "Total tests per 100,000 population")
+names(testing_todate_pcum) <- c("Province", "Total", "Data")
+names(testing_todate_pcump) <- c("Province", "Total", "Data")
+testing_todate_plot_p <- rbind(testing_todate_pcum, testing_todate_pcump)
 
-testing_todate_tcum<-data.frame(testing_todate_t$Territory, -testing_todate_t$Total, "Total tests")
-testing_todate_tcump<-data.frame(testing_todate_t$Territory, testing_todate_t$`Total per 100,000 population`, "Total tests per 100,000 population")
-names(testing_todate_tcum)<-c("Territory","Total","Data")
-names(testing_todate_tcump)<-c("Territory","Total","Data")
-testing_todate_plot_t<-rbind(testing_todate_tcum,testing_todate_tcump)
+testing_todate_tcum <- data.frame(testing_todate_t$Territory, -testing_todate_t$Total, "Total tests")
+testing_todate_tcump <- data.frame(testing_todate_t$Territory, 
+                                   testing_todate_t$`Total per 100,000 population`, 
+                                   "Total tests per 100,000 population")
+names(testing_todate_tcum) <- c("Territory","Total","Data")
+names(testing_todate_tcump) <- c("Territory","Total","Data")
+testing_todate_plot_t <- rbind(testing_todate_tcum, testing_todate_tcump)
 
 
 dfp <- tibble(
@@ -126,7 +149,6 @@ cump<-ggplot(dfp, aes(x = forcats::fct_rev(Province), y = Total, fill = Data)) +
         panel.grid.minor.x = element_line(colour = "grey95"), 
         panel.grid.major.y = element_line(colour = NA), 
         panel.grid.minor.y = element_line(colour = NA), 
-        #axis.ticks.y = element_blank(),
         legend.position = "none",
         axis.title = element_text(size=11))
 
@@ -141,7 +163,6 @@ cumt<-ggplot(dft, aes(x = forcats::fct_rev(Territory), y = Total, fill = Data)) 
         panel.grid.minor.x = element_line(colour = "grey95"), 
         panel.grid.major.y = element_line(colour = NA), 
         panel.grid.minor.y = element_line(colour = NA), 
-        #axis.ticks.y = element_blank(),
         legend.position = "none",
         plot.title = element_blank(),
         axis.title = element_text(size=11))
@@ -182,7 +203,7 @@ mapstat<-read.table("C:/Users/kuan liu/Dropbox (Personal)/STAT_consulting/Bayesi
 
 ## for alex's use:
 # mapstat <- read.table("testing_mapsdata.txt", header = TRUE, sep="\t")
-# canada_prov <- readOGR(dsn = "Kuan-Liu-testing_can", encoding='UTF-8',layer = "Canada")
+# canada_prov <- readOGR(dsn = "../Kuan-Liu-testing_can", encoding='UTF-8',layer = "Canada")
 
 canada_prov <- readOGR(dsn = "C:/Users/kuan liu/Dropbox (Personal)/STAT_consulting/Bayesiantest/Kuan-Liu-testing_can/Kuan-Liu-testing_can",
                        encoding='UTF-8',layer = "Canada")
@@ -190,14 +211,32 @@ canada_prov <- readOGR(dsn = "C:/Users/kuan liu/Dropbox (Personal)/STAT_consulti
 canada_prov$id<-c(24, 12, 47, 48, 10, 59, 13, 11, 60, 46, 35, 62, 61)
 testing_data<-merge(canada_prov, mapstat, by="id")
 
-map_test = tm_shape(testing_data)+tm_polygons(col="test",breaks=c(0,5000,10000,50000,100000, Inf),labels = c("<5000", "5000-10000", "10000-50000","50000-100000",">100000"), title=" ",palette ="YlOrRd")+tm_layout(title="Tests", title.size = 1,title.position=c("left","bottom"),legend.position = c(0.73,0.7))
+map_test <- tm_shape(testing_data)+tm_polygons(col="test",breaks=c(0,5000,10000,50000,100000, Inf),labels = c("<5000", "5000-10000", "10000-50000","50000-100000",">100000"), title=" ",palette ="YlOrRd")+tm_layout(title="Tests", title.size = 1,title.position=c("left","bottom"),legend.position = c(0.73,0.7))
 
 #map stat can be grouped with fixed breaks or continuous, 
-map_case = tm_shape(testing_data)+tm_polygons(col="case",breaks=c(0,1,100,500,1000,2000,5000,Inf),labels = c("0", "1-100","100-500","500-1000","1000-2000","2000-5000",">5000"),title=" ",palette ="YlOrRd")+tm_layout(title="Cases", title.size = 1,title.position=c("left","bottom"),legend.position =c(0.77,0.63))
+map_case <- tm_shape(testing_data) + 
+  tm_polygons(col = "case",
+              breaks = c(0, 1, 100, 500, 1000, 2000, 5000, Inf),
+              labels = c("0", "1-100", "100-500", "500-1000", "1000-2000", "2000-5000", ">5000"),
+              title = NA, 
+              palette = "YlOrRd") + 
+  tm_layout(title = "Cases", 
+            title.size = 1,
+            title.position = c("left", "bottom"),
+            legend.position = c(0.77, 0.63))
 
-map_test_p = tm_shape(testing_data)+tm_polygons(col="test_pop",breaks=c(500,1000,1500,3000,Inf),labels = c("500-1000","1000-1500","1500-3000",">3000"), title=" ",palette ="YlOrRd")+tm_layout(title="Tests per 100,000", title.size = 1,title.position=c("left","bottom"),legend.position =c(0.78,0.76))
+map_test_p <- tm_shape(testing_data) +
+  tm_polygons(col = "test_pop",
+              breaks = c(500, 1000, 1500, 3000, Inf),
+              labels = c("500-1000", "1000-1500", "1500-3000", ">3000"), 
+              title = NA,
+              palette = "YlOrRd") + 
+  tm_layout(title = "Tests per 100,000", 
+            title.size = 1,
+            title.position = c("left","bottom"),
+            legend.position =c(0.78, 0.76))
 
-map_case_p = tm_shape(testing_data)+tm_polygons(col="case_pop",breaks=c(0,1,20,30,40,50,Inf),labels = c("0", "1-20", "20-30","30-40","40-50",">50"), title=" ",palette ="YlOrRd")+tm_layout(title="Cases per 100,000", title.size = 1,title.position=c("left","bottom"),legend.position = c(0.84,0.68))
+map_case_p <- tm_shape(testing_data) + tm_polygons(col="case_pop",breaks=c(0,1,20,30,40,50,Inf),labels = c("0", "1-20", "20-30","30-40","40-50",">50"), title=" ",palette ="YlOrRd")+tm_layout(title="Cases per 100,000", title.size = 1,title.position=c("left","bottom"),legend.position = c(0.84,0.68))
 
 tmap_arrange(map_test, map_case,map_test_p, map_case_p,nrow=2,ncol=2)
 
