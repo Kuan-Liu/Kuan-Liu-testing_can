@@ -41,6 +41,17 @@ library(chron)
 library(tidyverse)
 library(ggpol)
 library(dplyr)
+library(tmap)
+library(tmaptools)
+library(leaflet)
+library(rgdal)
+library(gridExtra)
+library(ggthemes)
+library(dichromat)
+library(directlabels)
+library(gganimate)
+library(devtools)
+library(reshape2)
 ```
 
 
@@ -190,16 +201,8 @@ kable(testing_todate_t[,1:7], row.names = FALSE,align=c("c","c","c","c","c","c",
 
 #### Geographic mapping on the total number of tests, total number of cases, total number of tests per 100,000 population and total number of cases per 100,000 population as of `r format(Sys.time(), "%b %d, %Y %X")`
 ```{r echo=FALSE,results='hide',message = FALSE, warning = FALSE}
-# install.packages("tmap")
-# install.packages("tmaptools")
-# install.packages("leaflet")
-# install.packages("rgdal")
-library("tmap")
-library("tmaptools")
-library("leaflet")
-library("rgdal")
-
-mapstat<-read.table("C:/Users/kuan liu/Dropbox (Personal)/STAT_consulting/Bayesiantest/Kuan-Liu-testing_can/Kuan-Liu-testing_can/testing_mapsdata.txt", header = TRUE, sep="\t")
+mapstat<-read.table("C:/Users/kuan liu/Dropbox (Personal)/STAT_consulting/Bayesiantest/Kuan-Liu-testing_can/Kuan-Liu-testing_can/testing_mapsdata.txt", 
+                    header = TRUE, sep="\t")
 
 ## for alex's use:
 # mapstat <- read.table("testing_mapsdata.txt", header = TRUE, sep="\t")
@@ -239,11 +242,6 @@ map_test_p <- tm_shape(testing_data) +
 map_case_p <- tm_shape(testing_data) + tm_polygons(col="case_pop",breaks=c(0,1,20,30,40,50,Inf),labels = c("0", "1-20", "20-30","30-40","40-50",">50"), title=" ",palette ="YlOrRd")+tm_layout(title="Cases per 100,000", title.size = 1,title.position=c("left","bottom"),legend.position = c(0.84,0.68))
 
 tmap_arrange(map_test, map_case,map_test_p, map_case_p,nrow=2,ncol=2)
-
-# png("test-case_map.png")
-# tmap_arrange(map_test_p, map_case_p,nrow=1,ncol=2)
-# dev.off()
-
 ```
 
 ### 2.3 Estimated Test-Case Ratio
@@ -256,11 +254,6 @@ which is also known as the proportion of positives cases. For provinces and terr
 **Interpretation: Provinces and territories above the national line demonstrate higher proportion of tested inidividuals being postive - individuals tested in these areas are relatively more likely to be positive; Similarly, provinces and territories below the national line demonstrate lower proportion of tested individuals being positive - individuals tested in these areas are relatively less likely to be positive.**
 
 ```{r echo=FALSE,results='hide',message = FALSE, warning = FALSE}
-library(gridExtra)
-library(ggthemes)
-library(dichromat)
-library(directlabels)
-
 testing_todate$caseperpop<-round(testing_todate$`Reported Positive`/testing_todate$`Est. Population`*100000,0)
 names(testing_todate)[8]<-"Total cases per 100,000"
 
@@ -273,12 +266,13 @@ teamcolour_province<-c("#000000","#E69F00","#800000","#CC79A7","#56B4E9","#80800
 testing_todate$total_adj<-ifelse(is.na(testing_todate$`Reported Pending`)==1,testing_todate$Total, testing_todate$Total- testing_todate$`Reported Pending`)
 TCR_CAN<- round(sum(testing_todate$`Reported Positive`)/sum(testing_todate$total_adj),2)
 testing_todate$total_adjp<-round(testing_todate$total_adj/testing_todate$`Est. Population`*100000,0)
-# TCR_NY<- round(59513/172360,2)
-
 
 #cases/100,000 and tests/100,000;
-ggplot(testing_todate, aes(x=total_adjp, y=`Total cases per 100,000`, colour=Province)) +
-  geom_point(size=3)+geom_text(aes(fontface=2, label=Province), hjust=-0.1,vjust=-0.5,show.legend=FALSE)+
+testing2date <- ggplot(testing_todate, aes(x = total_adjp, y = `Total cases per 100,000`, colour = Province)) +
+  geom_point_interactive(aes(tooltip = c(paste0("Province/Territory: ", Province, 
+                                                "\n Total cases per 100,000: ", abs(`Total cases per 100,000`), 
+                                                "\n Total cases: ", abs(total_adjp)))), size = 3) +
+  geom_text(aes(fontface=2, label=Province), hjust=-0.1,vjust=-0.5,show.legend=FALSE)+
   geom_abline(intercept = 0, slope = TCR_CAN, color="red", 
                  linetype="dashed", size=1.5)+
   annotate(geom="text", x=300, y=120, label=paste("national test-case ratio at ", TCR_CAN*100 ,"%"),
@@ -295,14 +289,14 @@ ggplot(testing_todate, aes(x=total_adjp, y=`Total cases per 100,000`, colour=Pro
         panel.grid.major = element_line(colour = "grey95"),
         panel.grid.minor = element_line(colour = "grey95"),
         axis.text=element_text(size=11),
-        legend.position =  "right",
-        legend.background = element_blank(),
-        legend.box.background = element_blank(),
-        legend.title = element_blank(),
-        legend.key = element_blank(),
+        legend.position = "none",
+        #legend.background = element_blank(),
+        #legend.box.background = element_blank(),
+        #legend.title = element_blank(),
+        #legend.key = element_blank(),
         axis.title.y = element_text(margin = margin(t = 0, r = 10, b = 0, l = 0)))  
 
-
+girafe(code = print(testing2date))
 
 ```
 
@@ -315,19 +309,13 @@ ggplot(testing_todate, aes(x=total_adjp, y=`Total cases per 100,000`, colour=Pro
   - **It seems Ontario is falling slight behind on the testing capacity per capita. **
 
 ```{r echo=FALSE,message = FALSE, warning = FALSE}
-library(gganimate)
-library(devtools)
-library(reshape2)
-
 testing_cum <- read.table("C:/Users/kuan liu/Dropbox (Personal)/STAT_consulting/Bayesiantest/Kuan-Liu-testing_can/Kuan-Liu-testing_can/testing_cumulative.txt", header=TRUE, sep="\t")
 
 # for Alex's purposes:
 ## testing_cum <- read.table("testing_cumulative.txt", header=TRUE, sep="\t")
 
 names(testing_cum)<-c("dateformat","Province","cumulative","population")
-testing_cum$dateformat<-chron(as.character(testing_cum$dateformat),format="d-m-y",out.format="month-d-y")
-testing_cum$dateformat<-as.Date(testing_cum$dateformat)
-
+testing_cum$dateformat<-chron(as.character(testing_cum$dateformat),format="d-m-y", out.format="month-d-y")
   
 ## bar plot on testing for different Provinces/Territories
 ### turning "NA" into 0
@@ -392,6 +380,7 @@ new.testingprop_cum <- testingprop_cum %>%
   group_by(Province) %>% 
   ungroup()
 
+
 p2<-ggplot(new.testingprop_cum, aes(x = Rank, group = Province, 
                 fill = as.factor(Province), colour =  as.factor(Province))) +
   geom_tile(aes(y = cumulativecapita/2,
@@ -435,21 +424,17 @@ p2
 testing_cum2<-subset(testing_cum, Province %in% c("AB","BC","MB","NB","NL","NS","ON","PE","QC","SK"))
 
 p_testcum<-ggplot(testing_cum2, aes(x=dateformat, y=cumulative, colour=Province)) +
-geom_line(size = 1)+geom_point()+
-  scale_y_continuous(limits = c(0, 130000), breaks = seq(0,130000,5000))+
-  scale_color_manual(values=teamcolour_province)+
-  # scale_colour_brewer(palette="Spectral",direction=-1)+
+geom_line(size = 1) + 
+  geom_point() +
+  scale_y_continuous(limits = c(0, 130000), breaks = seq(0, 130000, 5000)) +
+  scale_color_manual(values = teamcolour_province)+
   scale_x_date(date_breaks="1 day",date_labels="%b %d", 
                limits = c(min(testing_cum2$dateformat), max(testing_cum2$dateformat) + 0.25)) +
   labs(y="\n Total number of cumulative tests by province", x="")+
   theme(panel.background = element_rect(fill = "white", colour = "white"),
         panel.grid.major = element_line(colour = "grey95"),
-        #panel.grid.minor = element_line(colour = "grey95"), 
-        axis.text=element_text(size=11),
+        axis.text = element_text(size = 11),
         axis.text.x = element_text(angle = 45, hjust = 1),
-        #legend.background = element_blank(),
-        #legend.key = element_blank(),
-        #legend.title = element_blank(), 
         legend.position = "none",
         axis.title.y = element_text(margin = margin(t = 0, r = 10, b = 0, l = 0))) + 
   geom_dl(aes(label = Province), method = list(dl.trans(x = x + 0.2), "last.qp"))
