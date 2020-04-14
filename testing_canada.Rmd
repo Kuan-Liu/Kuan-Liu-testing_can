@@ -310,6 +310,24 @@ testing2date <- ggplot(testing_todate, aes(x = total_adjp, y = `Total cases per 
 
 girafe(code = print(testing2date)) #Kuan:forsome reason this plot is not showing when I publish but it's there when I run on R consle. Not sure what's the problem, the first girafe worked well.
 
+#old plot, place here cause having some issue with the interactive one not displaying when publish file.
+# ggplot(testing_todate, aes(x=total_adjp, y=`Total cases per 100,000`, colour=Province)) +
+#   geom_point(size=3)+geom_text(aes(fontface=2, label=Province), hjust=-0.1,vjust=-0.5,show.legend=FALSE)+
+#   geom_abline(intercept = 0, slope = TCR_CAN, color="red", 
+#                  linetype="dashed", size=1.5)+
+#   annotate(geom="text", x=300, y=180, label=paste("national test-case ratio at ", TCR_CAN*100 ,"%"),
+#               color="red") +
+#   scale_x_continuous(limits = c(0, 1700), breaks = seq(0,1700,200))+
+#   scale_y_continuous(limits = c(0, 200), breaks = seq(0,200,10))+
+#   scale_color_manual(values=teamcolour)+
+#   labs(y="\n Total cases per 100,000 popualtion", x=" \n Total tests per 100,000 population",title = paste("Cases per 100,000 by tests per 100,000, as of ", format(Sys.time(), "%b %d, %Y %X") ))+
+#   theme(panel.background = element_rect(fill = "white", colour = "white"),
+#         panel.grid.major = element_line(colour = "grey95"),
+#         panel.grid.minor = element_line(colour = "grey95"),
+#         axis.text=element_text(size=11),
+#         legend.position =  "none",
+#         axis.title.y = element_text(margin = margin(t = 0, r = 10, b = 0, l = 0))) 
+
 ```
 
 ## 3. Cumulative tests overtime
