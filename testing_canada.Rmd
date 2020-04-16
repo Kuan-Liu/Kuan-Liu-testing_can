@@ -32,7 +32,7 @@ knitr::opts_chunk$set(message = FALSE, warning = FALSE, fig.align = "center",fig
 options(knitr.kable.NA = '-')
 ```
 
-```{r}
+```{r echo=FALSE}
 # required packages:
 require(ggplot2)
 library(knitr)
@@ -283,38 +283,32 @@ testing_todate$total_adj<-ifelse(is.na(testing_todate$`Reported Pending`)==1,tes
 TCR_CAN<- round(sum(testing_todate$`Reported Positive`)/sum(testing_todate$total_adj),2)
 testing_todate$total_adjp<-round(testing_todate$total_adj/testing_todate$`Est. Population`*100000,0)
 
-#cases/100,000 and tests/100,000;
-testing2date <- ggplot(testing_todate, aes(x = total_adjp, y = `Total cases per 100,000`, colour = Province)) +
-  geom_point_interactive(aes(tooltip = c(paste0("Province/Territory: ", Province, 
-                                                "\n Total cases per 100,000: ", abs(`Total cases per 100,000`), 
-                                                "\n Total cases: ", abs(total_adjp)))), size = 2) +
-  geom_text(aes(fontface=2, label=Province), hjust=-0.1,vjust=-0.5,show.legend=FALSE)+
-  geom_abline(intercept = 0, slope = TCR_CAN, color="red", 
-                 linetype="dashed", size=1)+
+#old plot, place here cause having some issue with the interactive one not displaying when publish file.
+ggplot(testing_todate, aes(x=total_adjp, y=`Total cases per 100,000`, colour=Province)) +
+  geom_point(size=3)+geom_text(aes(fontface=2, label=Province), hjust=-0.1,vjust=-0.5,show.legend=FALSE)+
+  geom_abline(intercept = 0, slope = TCR_CAN, color="red",
+                 linetype="dashed", size=1.5)+
   annotate(geom="text", x=300, y=180, label=paste("national test-case ratio at ", TCR_CAN*100 ,"%"),
               color="red") +
-  scale_x_continuous(limits = c(0, 1700), breaks = seq(0,1700,200))+
+  scale_x_continuous(limits = c(0, 2500), breaks = seq(0,2500,500))+
   scale_y_continuous(limits = c(0, 200), breaks = seq(0,200,10))+
   scale_color_manual(values=teamcolour)+
   labs(y="\n Total cases per 100,000 popualtion", x=" \n Total tests per 100,000 population",title = paste("Cases per 100,000 by tests per 100,000, as of ", format(Sys.time(), "%b %d, %Y %X") ))+
   theme(panel.background = element_rect(fill = "white", colour = "white"),
         panel.grid.major = element_line(colour = "grey95"),
         panel.grid.minor = element_line(colour = "grey95"),
-        axis.text=element_text(size=10),
-        legend.position = "none",
-        # legend.background = element_blank(),
-        # legend.box.background = element_blank(),
-        # legend.title = element_blank(),
-        # legend.key = element_blank(),
-        axis.title.y = element_text(margin = margin(t = 0, r = 10, b = 0, l = 0)))  
+        axis.text=element_text(size=11),
+        legend.position =  "none",
+        axis.title.y = element_text(margin = margin(t = 0, r = 10, b = 0, l = 0)))
 
-girafe(code = print(testing2date)) #Kuan:forsome reason this plot is not showing when I publish but it's there when I run on R consle. Not sure what's the problem, the first girafe worked well.
-
-#old plot, place here cause having some issue with the interactive one not displaying when publish file.
-# ggplot(testing_todate, aes(x=total_adjp, y=`Total cases per 100,000`, colour=Province)) +
-#   geom_point(size=3)+geom_text(aes(fontface=2, label=Province), hjust=-0.1,vjust=-0.5,show.legend=FALSE)+
+#cases/100,000 and tests/100,000;
+# testing2date <-ggplot(testing_todate, aes(x = total_adjp, y = `Total cases per 100,000`, colour = Province)) +
+#   geom_point_interactive(aes(tooltip = c(paste0("Province/Territory: ", Province, 
+#                                                 "\n Total cases per 100,000: ", abs(`Total cases per 100,000`), 
+#                                                 "\n Total cases: ", abs(total_adjp)))), size = 2) +
+#   geom_text(aes(fontface=2, label=Province), hjust=-0.1,vjust=-0.5,show.legend=FALSE)+
 #   geom_abline(intercept = 0, slope = TCR_CAN, color="red", 
-#                  linetype="dashed", size=1.5)+
+#                  linetype="dashed", size=1)+
 #   annotate(geom="text", x=300, y=180, label=paste("national test-case ratio at ", TCR_CAN*100 ,"%"),
 #               color="red") +
 #   scale_x_continuous(limits = c(0, 1700), breaks = seq(0,1700,200))+
@@ -324,9 +318,15 @@ girafe(code = print(testing2date)) #Kuan:forsome reason this plot is not showing
 #   theme(panel.background = element_rect(fill = "white", colour = "white"),
 #         panel.grid.major = element_line(colour = "grey95"),
 #         panel.grid.minor = element_line(colour = "grey95"),
-#         axis.text=element_text(size=11),
-#         legend.position =  "none",
-#         axis.title.y = element_text(margin = margin(t = 0, r = 10, b = 0, l = 0))) 
+#         axis.text=element_text(size=10),
+#         legend.position = "none",
+#         # legend.background = element_blank(),
+#         # legend.box.background = element_blank(),
+#         # legend.title = element_blank(),
+#         # legend.key = element_blank(),
+#         axis.title.y = element_text(margin = margin(t = 0, r = 10, b = 0, l = 0)))  
+
+# girafe(code = print(testing2date)) #Kuan:forsome reason this plot is not showing when I publish but it's there when I run on R consle. Not sure what's the problem, the first girafe worked well.
 
 ```
 
@@ -457,7 +457,7 @@ testing_cum2<-subset(testing_cum, Province %in% c("AB","BC","MB","NB","NL","NS",
 p_testcum<-ggplot(testing_cum2, aes(x=dateformat, y=cumulative, colour=Province)) +
 geom_line(size = 1) + 
   geom_point() +
-  scale_y_continuous(limits = c(0, 140000), breaks = seq(0, 140000, 10000)) +
+  scale_y_continuous(limits = c(0, 150000), breaks = seq(0, 150000, 10000)) +
   scale_color_manual(values = teamcolour_province)+
   scale_x_date(date_breaks="1 day",date_labels="%b %d", 
                limits = c(min(testing_cum2$dateformat), max(testing_cum2$dateformat) + 0.25)) +
@@ -585,7 +585,7 @@ testing_cum_top<-subset(testing_cum2, Province %in% c("AB","BC","ON","QC"))
 topp<-ggplot(testing_cum_top, aes(x=dateformat, y=est_daily2, colour=Province)) +
   geom_point()+
   geom_line(data=testing_cum_top[!is.na(testing_cum_top$est_daily2),],size = 1)+
-  scale_y_continuous(limits = c(0, 15300), breaks = seq(0,15300,2000))+
+  scale_y_continuous(limits = c(0, 15300), breaks = seq(0,15300,1000))+
   scale_color_manual(values=teamcolour_province[c(1,2,7,9)])+
   scale_x_date(date_breaks="1 day",date_labels="%b %d", 
                limits = c(min(testing_cum2$dateformat), max(testing_cum2$dateformat) + 0.25)) +
@@ -612,7 +612,7 @@ botp<-ggplot(testing_cum_bot, aes(x=dateformat, y=est_daily2, colour=Province)) 
   geom_point()+
   geom_line(data=testing_cum_bot[!is.na(testing_cum_bot$est_daily2),],size = 1)+
   labs(y="\n Number of tests \n completed per day")+
-  scale_y_continuous(limits = c(0, 1800), breaks = seq(0,1800,200))+
+  scale_y_continuous(limits = c(0, 1800), breaks = seq(0,1800,100))+
   scale_color_manual(values=teamcolour_province[c(3,4,5,6,8,10)])+
   scale_x_date(date_breaks="1 day",date_labels="%b %d", 
                limits = c(min(testing_cum2$dateformat), max(testing_cum2$dateformat) + 0.25)) +
@@ -661,7 +661,7 @@ terr
 
 - **Highlights**
   - **Nunavut has no confirmed case yet.**
-  - **Quebec has the highest proportion of positive tests (10.1%).**
+  - **Quebec has the highest proportion of positive tests (10.2%).**
   - **There appears to be a back log of test reporting in Nunvaut. The back log in Ontario is observed to be cleared. The proportion of pending tests in Ontario has reduced significantly, at less than 2% now comparing to the same proportion on Mar 25, 2020 at 29.4%.**
   
 ```{r echo=FALSE}
@@ -712,7 +712,7 @@ ggplot(testprop_plot, aes(x = province, y = value, fill = variable, label = valu
 
 ## Reference
 
-- COVID-19 Canada Open Data Working Group. Epidemiological Data from the COVID-19 Outbreak in Canada. https://github.com/ishaberry/Covid19Canada. (2020-03-25).
+- Berry I, Soucy J-PR, Tuite A, Fisman D. Open access epidemiologic data and an interactive dashboard to monitor the COVID-19 outbreak in Canada. CMAJ. 2020 Apr 14;192(15):E420. doi: https://doi.org/10.1503/cmaj.75262
 - [National testing data to date] https://www.canada.ca/en/public-health/services/diseases/2019-novel-coronavirus-infection.html
 - [Ontario testing data to date] https://www.ontario.ca/page/2019-novel-coronavirus
 - [British Columbia testing data to date] http://www.bccdc.ca/about/news-stories/stories/2020/information-on-novel-coronavirus
