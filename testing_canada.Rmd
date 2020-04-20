@@ -19,6 +19,8 @@ output:
     toc: yes
     toc_depth: 3
     toc_float: yes
+    includes: 
+      in_header: google-analytics.html
 ---
 
 **Date Created:** Mar 25, 2020
@@ -289,17 +291,21 @@ ggplot(testing_todate, aes(x=total_adjp, y=`Total cases per 100,000`, colour=Pro
   geom_point(size=3)+geom_text(aes(fontface=2, label=Province), hjust=-0.1,vjust=-0.5,show.legend=FALSE)+
   geom_abline(intercept = 0, slope = TCR_CAN, color="red",
                  linetype="dashed", size=1.5)+
-  annotate(geom="text", x=300, y=180, label=paste("national test-case ratio at ", TCR_CAN*100 ,"%"),
+  annotate(geom="text", x=500, y=200, label=paste("national test-case ratio at ", TCR_CAN*100 ,"%"),
               color="red") +
   scale_x_continuous(limits = c(0, 2500), breaks = seq(0,2500,500))+
-  scale_y_continuous(limits = c(0, 200), breaks = seq(0,200,10))+
+  scale_y_continuous(limits = c(0, 220), breaks = seq(0,220,10))+
   scale_color_manual(values=teamcolour)+
   labs(y="\n Total cases per 100,000 popualtion", x=" \n Total tests per 100,000 population",title = paste("Cases per 100,000 by tests per 100,000, as of ", format(Sys.time(), "%b %d, %Y %X") ))+
   theme(panel.background = element_rect(fill = "white", colour = "white"),
         panel.grid.major = element_line(colour = "grey95"),
         panel.grid.minor = element_line(colour = "grey95"),
         axis.text=element_text(size=11),
-        legend.position =  "none",
+        legend.position =  "right",
+        legend.background = element_blank(),
+        legend.box.background = element_blank(),
+        legend.title = element_blank(),
+        legend.key = element_blank(),
         axis.title.y = element_text(margin = margin(t = 0, r = 10, b = 0, l = 0)))
 
 #cases/100,000 and tests/100,000;
@@ -458,7 +464,7 @@ testing_cum2<-subset(testing_cum, Province %in% c("AB","BC","MB","NB","NL","NS",
 p_testcum<-ggplot(testing_cum2, aes(x=dateformat, y=cumulative, colour=Province)) +
 geom_line(size = 1) + 
   geom_point() +
-  scale_y_continuous(limits = c(0, 155000), breaks = seq(0, 155000, 10000)) +
+  scale_y_continuous(limits = c(0, 180000), breaks = seq(0, 180000, 20000)) +
   scale_color_manual(values = teamcolour_province)+
   scale_x_date(date_breaks="1 day",date_labels="%b %d", 
                limits = c(min(testing_cum2$dateformat), max(testing_cum2$dateformat) + 0.25)) +
@@ -482,7 +488,7 @@ p_testcump<-ggplot(testprop_cum2, aes(x=dateformat, y=cumulative_p, colour=Provi
 geom_line(size = 1)+geom_point()+
   # geom_hline(yintercept=590, linetype="dashed", color = "black") +
   # geom_text(x=as.Date("2020-03-16"),y=510,label="Mar 28 National est.",color="black")+
-  scale_y_continuous(limits = c(0, 2000), breaks = seq(0,2000,100))+
+  scale_y_continuous(limits = c(0, 2400), breaks = seq(0,2400,200))+
   scale_color_manual(values=teamcolour_province)+
   scale_x_date(date_breaks="1 day",date_labels="%b %d")+
   labs(y="\n Total number of cumulative tests per 100,000 population \n by province", x="")+
@@ -508,7 +514,7 @@ testing_cum2<-subset(testing_cum, Province %in% c("NU","YT","NT") & dateformat >
 
 p_testcumt<-ggplot(testing_cum2, aes(x=dateformat, y=cumulative, colour=Province)) +
 geom_line(size = 1)+geom_point()+
-  scale_y_continuous(limits = c(0, 1600), breaks = seq(0,1600,200))+
+  scale_y_continuous(limits = c(0, 1800), breaks = seq(0,1800,200))+
   scale_color_manual(values=teamcolour_territory)+
   scale_x_date(date_breaks="1 day",date_labels="%b %d")+
   labs(y="\n Total number of cumulative tests \n by territory", x="")+
@@ -531,7 +537,7 @@ testprop_cum2<-subset(testprop_cum, Province %in% c("NU","YT","NT") & dateformat
 p_testcumpt<-ggplot(testprop_cum2, aes(x=dateformat, y=cumulative_p, colour=Province)) +
 geom_line(size = 1)+geom_point()+
   # geom_hline(yintercept=500, linetype="dashed", color = "black") +
-  scale_y_continuous(limits = c(0, 3500), breaks = seq(0,3500,500))+
+  scale_y_continuous(limits = c(0, 4000), breaks = seq(0,4000,500))+
   scale_color_manual(values=teamcolour_territory)+
   scale_x_date(date_breaks="1 day",date_labels="%b %d")+
   labs(y="\n Total number of cumulative tests \n per 100,000 population by territory", x="")+
@@ -592,6 +598,7 @@ topp<-ggplot(testing_cum_top, aes(x=dateformat, y=est_daily2, colour=Province)) 
                limits = c(min(testing_cum2$dateformat), max(testing_cum2$dateformat) + 0.25)) +
   geom_hline(yintercept=3000, linetype="dashed", color = "black") +
   geom_hline(yintercept=5000, linetype="dashed", color = "black") +
+  geom_hline(yintercept=10000, linetype="dashed", color = "black") +
   labs(y="\n Number of tests \n completed per day")+
   theme(panel.background = element_rect(fill = "white", colour = "white"),
         panel.grid.major = element_line(colour = "grey95"),
@@ -662,7 +669,7 @@ terr
 
 - **Highlights**
   - **Nunavut has no confirmed case yet.**
-  - **Quebec has the highest proportion of positive tests (10.5%).**
+  - **Quebec has the highest proportion of positive tests (11%).**
   - **There appears to be a back log of test reporting in Nunvaut. The back log in Ontario is observed to be cleared. The proportion of pending tests in Ontario has reduced significantly, at about 5% now comparing to the same proportion on Mar 25, 2020 at 29.4%.**
   
 ```{r echo=FALSE}
