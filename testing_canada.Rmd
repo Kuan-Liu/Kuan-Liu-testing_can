@@ -82,9 +82,8 @@ Data used in this repostory are extracted from the data speardsheet posted by th
 
 - **Highlights**
   - **Nova Scotia, Alberta, and Quebec are the top three provinces ranking by the number of tests per 100,000 population.**
-  - **Nova Scotia has significantly increased its testing number after the Easter long weekend, now ranking as the number one province based on testing capacity per capita.**
-  - **Quebec has rapidly increased its testing capacity. The total number of tests per 100,000 population has increased to 1582 as of Apr 13, 2020, comparing to 365 on Mar 25, 2020.**
-  - **Northwest territories and Yukon reported over 2000 tests per 100,000 population, highest in Canada.**
+  - **Nova Scotia has significantly increased its testing number after the Easter long weekend.**
+  - **Northwest territories reported over 3000 tests per 100,000 population, highest in Canada.**
 
 ```{r echo=FALSE}
 #getting a pretty pyramid plot;
@@ -291,10 +290,10 @@ ggplot(testing_todate, aes(x=total_adjp, y=`Total cases per 100,000`, colour=Pro
   geom_point(size=3)+geom_text(aes(fontface=2, label=Province), hjust=-0.1,vjust=-0.5,show.legend=FALSE)+
   geom_abline(intercept = 0, slope = TCR_CAN, color="red",
                  linetype="dashed", size=1.5)+
-  annotate(geom="text", x=500, y=200, label=paste("national test-case ratio at ", TCR_CAN*100 ,"%"),
+  annotate(geom="text", x=500, y=250, label=paste("national test-case ratio at ", TCR_CAN*100 ,"%"),
               color="red") +
   scale_x_continuous(limits = c(0, 2500), breaks = seq(0,2500,500))+
-  scale_y_continuous(limits = c(0, 220), breaks = seq(0,220,10))+
+  scale_y_continuous(limits = c(0, 250), breaks = seq(0,250,10))+
   scale_color_manual(values=teamcolour)+
   labs(y="\n Total cases per 100,000 popualtion", x=" \n Total tests per 100,000 population",title = paste("Cases per 100,000 by tests per 100,000, as of ", format(Sys.time(), "%b %d, %Y %X") ))+
   theme(panel.background = element_rect(fill = "white", colour = "white"),
@@ -488,7 +487,7 @@ p_testcump<-ggplot(testprop_cum2, aes(x=dateformat, y=cumulative_p, colour=Provi
 geom_line(size = 1)+geom_point()+
   # geom_hline(yintercept=590, linetype="dashed", color = "black") +
   # geom_text(x=as.Date("2020-03-16"),y=510,label="Mar 28 National est.",color="black")+
-  scale_y_continuous(limits = c(0, 2400), breaks = seq(0,2400,200))+
+  scale_y_continuous(limits = c(0, 2500), breaks = seq(0,2500,200))+
   scale_color_manual(values=teamcolour_province)+
   scale_x_date(date_breaks="1 day",date_labels="%b %d")+
   labs(y="\n Total number of cumulative tests per 100,000 population \n by province", x="")+
@@ -669,8 +668,8 @@ terr
 
 - **Highlights**
   - **Nunavut has no confirmed case yet.**
-  - **Quebec has the highest proportion of positive tests (11%).**
-  - **There appears to be a back log of test reporting in Nunvaut. The back log in Ontario is observed to be cleared. The proportion of pending tests in Ontario has reduced significantly, at about 5% now comparing to the same proportion on Mar 25, 2020 at 29.4%.**
+  - **Quebec has the highest proportion of positive tests (11.3%).**
+  - **There appears to be a back log of test reporting in Nunvaut. The back log in Ontario is observed to be cleared. The proportion of pending tests in Ontario has reduced significantly, at less than 5% now comparing to the same proportion on Mar 25, 2020 at 29.4%.**
   
 ```{r echo=FALSE}
 
