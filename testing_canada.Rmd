@@ -240,8 +240,8 @@ map_case <- tm_shape(testing_data) +
 
 map_test_p <- tm_shape(testing_data) +
   tm_polygons(col = "test_pop",
-              breaks = c(500, 1000, 1500, 3000, Inf),
-              labels = c("500-1000", "1000-1500", "1500-3000", ">3000"), 
+              breaks = c(1000, 2000, 3000, Inf),
+              labels = c("1000-2000", "2000-3000",">3000"), 
               title = " ",
               palette = "YlOrRd") + 
   tm_layout(title = "Tests per 100,000", 
@@ -463,7 +463,7 @@ testing_cum2<-subset(testing_cum, Province %in% c("AB","BC","MB","NB","NL","NS",
 p_testcum<-ggplot(testing_cum2, aes(x=dateformat, y=cumulative, colour=Province)) +
 geom_line(size = 1) + 
   geom_point() +
-  scale_y_continuous(limits = c(0, 230000), breaks = seq(0, 230000, 10000)) +
+  scale_y_continuous(limits = c(0, 260000), breaks = seq(0, 260000, 20000)) +
   scale_color_manual(values = teamcolour_province)+
   scale_x_date(date_breaks="1 day",date_labels="%b %d", 
                limits = c(min(testing_cum2$dateformat), max(testing_cum2$dateformat) + 0.25)) +
@@ -668,7 +668,7 @@ terr
 
 - **Highlights**
   - **Nunavut has no confirmed case yet.**
-  - **Quebec has the highest proportion of positive tests (12.2%).**
+  - **Quebec has the highest proportion of positive tests (12.3%).**
   - **There appears to be a back log of test reporting in Nunvaut. The back log in Ontario is observed to be cleared. The proportion of pending tests in Ontario has reduced significantly, at less than 5% now comparing to the same proportion on Mar 25, 2020 at 29.4%.**
   
 ```{r echo=FALSE}
