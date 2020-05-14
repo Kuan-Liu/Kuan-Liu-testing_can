@@ -505,7 +505,7 @@ testing_cum_top<-subset(testing_cum2, Province %in% c("AB","BC","ON","QC"))
 topp<-ggplot(testing_cum_top, aes(x=dateformat, y=est_daily2, colour=Province)) +
   geom_point()+
   geom_line(data=testing_cum_top[!is.na(testing_cum_top$est_daily2),],size = 1)+
-  scale_y_continuous(limits = c(0, 17200), breaks = seq(0,17200,1000))+
+  scale_y_continuous(limits = c(0, 20000), breaks = seq(0,20000,1000))+
   scale_color_manual(values=teamcolour_province[c(1,2,7,9)])+
   scale_x_date(date_breaks="1 day",date_labels="%b %d", 
                limits = c(min(testing_cum2$dateformat), max(testing_cum2$dateformat) + 0.25)) +
