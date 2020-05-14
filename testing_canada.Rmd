@@ -378,7 +378,7 @@ testing_cum2<-subset(testing_cum, Province %in% c("AB","BC","MB","NB","NL","NS",
 p_testcum<-ggplot(testing_cum2, aes(x=dateformat, y=cumulative, colour=Province)) +
 geom_line(size = 1) + 
   geom_point() +
-  scale_y_continuous(limits = c(0, 460000), breaks = seq(0, 460000, 20000)) +
+  scale_y_continuous(limits = c(0, 480000), breaks = seq(0, 480000, 20000)) +
   scale_color_manual(values = teamcolour_province)+
   scale_x_date(date_breaks="1 day",date_labels="%b %d", 
                limits = c(min(testing_cum2$dateformat), max(testing_cum2$dateformat) + 0.25)) +
@@ -402,7 +402,7 @@ p_testcump<-ggplot(testprop_cum2, aes(x=dateformat, y=cumulative_p, colour=Provi
 geom_line(size = 1)+geom_point()+
   # geom_hline(yintercept=590, linetype="dashed", color = "black") +
   # geom_text(x=as.Date("2020-03-16"),y=510,label="Mar 28 National est.",color="black")+
-  scale_y_continuous(limits = c(0, 4400), breaks = seq(0,4400,200))+
+  scale_y_continuous(limits = c(0, 4600), breaks = seq(0,4600,200))+
   scale_color_manual(values=teamcolour_province)+
   scale_x_date(date_breaks="1 day",date_labels="%b %d")+
   labs(y="\n Total number of cumulative tests per 100,000 population \n by province", x="")+
