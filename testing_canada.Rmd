@@ -495,7 +495,8 @@ testing_cum <- testing_cum %>%
                group_by(Province) %>%
                mutate(lead_value = dplyr::lead(cumulative, n=1, default = NA))
 testing_cum$est_daily<-testing_cum$lead_value - testing_cum$cumulative
-testing_cum$est_daily2<-ifelse(testing_cum$est_daily<=0,NA, testing_cum$est_daily)
+testing_cum$est_daily2<-ifelse(testing_cum$est_daily<=1 | (testing_cum$est_daily<=50 & testing_cum$Province=="BC"),NA, testing_cum$est_daily)
+# testing_cum$est_daily2<-ifelse(testing_cum$est_daily<=50 & testing_cum$Province=="BC",NA, testing_cum$est_daily)
 
 #Province plot;
 testing_cum2<-subset(testing_cum, Province %in% c("AB","BC","MB","NB","NL","NS","ON","PE","QC","SK")& dateformat > as.Date("2020-03-26") & dateformat < Sys.Date())
