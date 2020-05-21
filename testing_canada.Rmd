@@ -57,9 +57,9 @@ library(reshape2)
 ```
 
 
-**From the authors: Thank you for your interest in our work! We are constantly working to improve this website and all comments and feedbacks are welcome. For most accurate and reliable Canadian COVID-19 epidemiology data, please visit Public Health Agency of Canada COVID-19 report site at https://www.canada.ca/en/public-health/services/diseases/2019-novel-coronavirus-infection.html (Full PDF report available).**
+**From the authors: Thank you for your interest in our work! For most accurate and reliable Canadian COVID-19 epidemiology data, please visit [Public Health Agency of Canada COVID-19 report site](https://www.canada.ca/en/public-health/services/diseases/2019-novel-coronavirus-infection.html)**
 
-**Update: starting April 4, we will report Ontario case number using the COVID-19 Canada Open Data Working Group's spreadsheet. The data is updated using information from Ontario public health units and the numbers on case count may be higher than other sources.**
+**News: We are working to create a dashboard website to replace this document. In the new dashboard, we aim to use primarily the official federal and provincial COVID-19 testing data for visualization. The new dashboard will be available to share in June 2020. Before the release of the new dashboard, we will continue to update this page.**
 
 ## Acknowledgment
 Data used in this repostory are extracted from the data speardsheet posted by the COVID-19 Canada Open Data Working Group (https://github.com/ishaberry/Covid19Canada). This working group, lead by Isha Berry and Jean-Paul R. Soucy from Dalla Lana School of Public Health, Unviersity of Toronto, has created an interactive dashboard on Canadian COVID-19 epidemiology data. We direct readers to visit the dashboard at https://art-bd.shinyapps.io/covid19canada/.
@@ -81,7 +81,7 @@ Data used in this repostory are extracted from the data speardsheet posted by th
 ### 2.1 Total number of tests to date by province and territory
 
 - **Highlights**
-  - **Nova Scotia, Alberta, and Quebec are the top three provinces ranking by the number of tests per 100,000 population.**
+  - **Alberta, Quebec and Ontario are the top three provinces ranking by the number of tests per 100,000 population.**
   - **Nova Scotia has significantly increased its testing number after the Easter long weekend.**
   - **Northwest territories reported over 3600 tests per 100,000 population, highest in Canada.**
 
@@ -231,10 +231,10 @@ ggplot(testing_todate, aes(x=total_adjp, y=`Total cases per 100,000`, colour=Pro
   geom_point(size=3)+geom_text(aes(fontface=2, label=Province), hjust=-0.1,vjust=-0.5,show.legend=FALSE)+
   geom_abline(intercept = 0, slope = TCR_CAN, color="red",
                  linetype="dashed", size=1.5)+
-  annotate(geom="text", x=900, y=525, label=paste("national test-case ratio at ", TCR_CAN*100 ,"%"),
+  annotate(geom="text", x=1000, y=550, label=paste("national test-case ratio at ", TCR_CAN*100 ,"%"),
               color="red") +
-  scale_x_continuous(limits = c(0, 5000), breaks = seq(0,5000,500))+
-  scale_y_continuous(limits = c(0, 525), breaks = seq(0,525,25))+
+  scale_x_continuous(limits = c(0, 5500), breaks = seq(0,5500,500))+
+  scale_y_continuous(limits = c(0, 550), breaks = seq(0,550,25))+
   scale_color_manual(values=teamcolour)+
   labs(y="\n Total cases per 100,000 popualtion", x=" \n Total tests per 100,000 population",title = paste("Cases per 100,000 by tests per 100,000, as of ", format(Sys.time(), "%b %d, %Y %X") ))+
   theme(panel.background = element_rect(fill = "white", colour = "white"),
@@ -378,7 +378,7 @@ testing_cum2<-subset(testing_cum, Province %in% c("AB","BC","MB","NB","NL","NS",
 p_testcum<-ggplot(testing_cum2, aes(x=dateformat, y=cumulative, colour=Province)) +
 geom_line(size = 1) + 
   geom_point() +
-  scale_y_continuous(limits = c(0, 560000), breaks = seq(0, 560000, 20000)) +
+  scale_y_continuous(limits = c(0, 580000), breaks = seq(0, 580000, 20000)) +
   scale_color_manual(values = teamcolour_province)+
   scale_x_date(date_breaks="1 day",date_labels="%b %d", 
                limits = c(min(testing_cum2$dateformat), max(testing_cum2$dateformat) + 0.25)) +
@@ -402,7 +402,7 @@ p_testcump<-ggplot(testprop_cum2, aes(x=dateformat, y=cumulative_p, colour=Provi
 geom_line(size = 1)+geom_point()+
   # geom_hline(yintercept=590, linetype="dashed", color = "black") +
   # geom_text(x=as.Date("2020-03-16"),y=510,label="Mar 28 National est.",color="black")+
-  scale_y_continuous(limits = c(0,5000), breaks = seq(0,5000,200))+
+  scale_y_continuous(limits = c(0,5200), breaks = seq(0,5200,200))+
   scale_color_manual(values=teamcolour_province)+
   scale_x_date(date_breaks="1 day",date_labels="%b %d")+
   labs(y="\n Total number of cumulative tests per 100,000 population \n by province", x="")+
