@@ -231,10 +231,10 @@ ggplot(testing_todate, aes(x=total_adjp, y=`Total cases per 100,000`, colour=Pro
   geom_point(size=3)+geom_text(aes(fontface=2, label=Province), hjust=-0.1,vjust=-0.5,show.legend=FALSE)+
   geom_abline(intercept = 0, slope = TCR_CAN, color="red",
                  linetype="dashed", size=1.5)+
-  annotate(geom="text", x=1200, y=600, label=paste("national test-case ratio at ", TCR_CAN*100 ,"%"),
+  annotate(geom="text", x=1200, y=650, label=paste("national test-case ratio at ", TCR_CAN*100 ,"%"),
               color="red") +
-  scale_x_continuous(limits = c(0, 6000), breaks = seq(0,6000,500))+
-  scale_y_continuous(limits = c(0, 600), breaks = seq(0,600,25))+
+  scale_x_continuous(limits = c(0, 6100), breaks = seq(0,6100,500))+
+  scale_y_continuous(limits = c(0, 650), breaks = seq(0,650,25))+
   scale_color_manual(values=teamcolour)+
   labs(y="\n Total cases per 100,000 popualtion", x=" \n Total tests per 100,000 population",title = paste("Cases per 100,000 by tests per 100,000, as of ", format(Sys.time(), "%b %d, %Y %X") ))+
   theme(panel.background = element_rect(fill = "white", colour = "white"),
@@ -373,12 +373,12 @@ p2
 
 ```{r echo=FALSE}
 
-testing_cum2<-subset(testing_cum, Province %in% c("AB","BC","MB","NB","NL","NS","ON","PE","QC","SK")& dateformat > as.Date("2020-03-26"))
+testing_cum2<-subset(testing_cum, Province %in% c("AB","BC","MB","NB","NL","NS","ON","PE","QC","SK")& dateformat > as.Date("2020-03-31"))
 
 p_testcum<-ggplot(testing_cum2, aes(x=dateformat, y=cumulative, colour=Province)) +
 geom_line(size = 1) + 
   geom_point() +
-  scale_y_continuous(limits = c(0, 680000), breaks = seq(0, 680000, 20000)) +
+  scale_y_continuous(limits = c(0, 740000), breaks = seq(0, 740000, 20000)) +
   scale_color_manual(values = teamcolour_province)+
   scale_x_date(date_breaks="1 day",date_labels="%b %d", 
                limits = c(min(testing_cum2$dateformat), max(testing_cum2$dateformat) + 0.25)) +
@@ -395,14 +395,14 @@ p_testcum
 
 testprop_cum<-data.frame(testing_cum[,1:2],round(testing_cum[,3]/testing_cum[,4]*100000,1))
 names(testprop_cum)<-c("dateformat","Province","cumulative_p")
-testprop_cum2<-subset(testprop_cum, Province %in% c("AB","BC","MB","NB","NL","NS","ON","PE","QC","SK")& dateformat > as.Date("2020-03-26"))
+testprop_cum2<-subset(testprop_cum, Province %in% c("AB","BC","MB","NB","NL","NS","ON","PE","QC","SK")& dateformat > as.Date("2020-03-31"))
 
 
 p_testcump<-ggplot(testprop_cum2, aes(x=dateformat, y=cumulative_p, colour=Province)) +
 geom_line(size = 1)+geom_point()+
   # geom_hline(yintercept=590, linetype="dashed", color = "black") +
   # geom_text(x=as.Date("2020-03-16"),y=510,label="Mar 28 National est.",color="black")+
-  scale_y_continuous(limits = c(0,6000), breaks = seq(0,6000,200))+
+  scale_y_continuous(limits = c(0,6200), breaks = seq(0,6200,200))+
   scale_color_manual(values=teamcolour_province)+
   scale_x_date(date_breaks="1 day",date_labels="%b %d")+
   labs(y="\n Total number of cumulative tests per 100,000 population \n by province", x="")+
@@ -424,7 +424,7 @@ p_testcump
 
 ```{r echo=FALSE}
 
-testing_cum2<-subset(testing_cum, Province %in% c("NU","YT","NT") & dateformat > as.Date("2020-03-26"))
+testing_cum2<-subset(testing_cum, Province %in% c("NU","YT","NT") & dateformat > as.Date("2020-03-31"))
 
 p_testcumt<-ggplot(testing_cum2, aes(x=dateformat, y=cumulative, colour=Province)) +
 geom_line(size = 1)+geom_point()+
@@ -446,7 +446,7 @@ geom_line(size = 1)+geom_point()+
 
 testprop_cum<-data.frame(testing_cum[,1:2],round(testing_cum[,3]/testing_cum[,4]*100000,1))
 names(testprop_cum)<-c("dateformat","Province","cumulative_p")
-testprop_cum2<-subset(testprop_cum, Province %in% c("NU","YT","NT") & dateformat > as.Date("2020-03-26"))
+testprop_cum2<-subset(testprop_cum, Province %in% c("NU","YT","NT") & dateformat > as.Date("2020-03-31"))
 
 p_testcumpt<-ggplot(testprop_cum2, aes(x=dateformat, y=cumulative_p, colour=Province)) +
 geom_line(size = 1)+geom_point()+
@@ -499,14 +499,14 @@ testing_cum$est_daily2<-ifelse(testing_cum$est_daily<=1 | (testing_cum$est_daily
 # testing_cum$est_daily2<-ifelse(testing_cum$est_daily<=50 & testing_cum$Province=="BC",NA, testing_cum$est_daily)
 
 #Province plot;
-testing_cum2<-subset(testing_cum, Province %in% c("AB","BC","MB","NB","NL","NS","ON","PE","QC","SK")& dateformat > as.Date("2020-03-26") & dateformat < Sys.Date())
+testing_cum2<-subset(testing_cum, Province %in% c("AB","BC","MB","NB","NL","NS","ON","PE","QC","SK")& dateformat > as.Date("2020-03-31") & dateformat < Sys.Date())
 
 testing_cum_top<-subset(testing_cum2, Province %in% c("AB","BC","ON","QC"))
 
 topp<-ggplot(testing_cum_top, aes(x=dateformat, y=est_daily2, colour=Province)) +
   geom_point()+
   geom_line(data=testing_cum_top[!is.na(testing_cum_top$est_daily2),],size = 1)+
-  scale_y_continuous(limits = c(0, 20000), breaks = seq(0,20000,1000))+
+  scale_y_continuous(limits = c(0, 22000), breaks = seq(0,22000,1000))+
   scale_color_manual(values=teamcolour_province[c(1,2,7,9)])+
   scale_x_date(date_breaks="1 day",date_labels="%b %d", 
                limits = c(min(testing_cum2$dateformat), max(testing_cum2$dateformat) + 0.25)) +
@@ -553,7 +553,7 @@ botp<-ggplot(testing_cum_bot, aes(x=dateformat, y=est_daily2, colour=Province)) 
 
 
 #Territory plot;
-testing_cumt<-subset(testing_cum, Province %in% c("NU","YT","NT") & dateformat > as.Date("2020-03-26") & dateformat < Sys.Date())
+testing_cumt<-subset(testing_cum, Province %in% c("NU","YT","NT") & dateformat > as.Date("2020-03-31") & dateformat < Sys.Date())
 
 terr<-ggplot(testing_cumt, aes(x=dateformat, y=est_daily2, colour=Province)) +
 geom_line(data=testing_cumt[!is.na(testing_cumt$est_daily2),],size = 1)+geom_point()+
@@ -583,7 +583,7 @@ terr
 
 - **Highlights**
   - **Nunavut has no confirmed case yet.**
-  - **Quebec has the highest proportion of positive tests (12%).**
+  - **Quebec has the highest proportion of positive tests (11.4%).**
   - **The back log in Ontario is observed to be cleared. The proportion of pending tests in Ontario has reduced significantly, at less than 5% now comparing to the same proportion on Mar 25, 2020 at 29.4%.**
   
 ```{r echo=FALSE}
