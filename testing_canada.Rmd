@@ -181,8 +181,8 @@ map_case <- tm_shape(testing_data) +
 
 map_test_p <- tm_shape(testing_data) +
   tm_polygons(col = "test_pop",
-              breaks = c(1000, 2000, 3000, 4000, 5000,6000,Inf),
-              labels = c("1000-2000", "2000-3000", "3000-4000","4000-5000","5000-6000",">6000"), 
+              breaks = c(2000, 3000, 4000, 5000,6000,Inf),
+              labels = c("<2000", "2000-3000", "3000-4000","4000-5000","5000-6000",">6000"), 
               title = " ",
               palette = "YlOrRd") + 
   tm_layout(title = "Tests per 100,000", 
@@ -192,13 +192,13 @@ map_test_p <- tm_shape(testing_data) +
 
 map_case_p <- tm_shape(testing_data) + 
   tm_polygons(col="case_pop",
-              breaks=c(0,1,20,40,60,Inf),
-              labels = c("0", "1-20", "20-40","40-60",">60"), 
+              breaks=c(0,1,50,100,200,Inf),
+              labels = c("0", "1-50", "50-100","100-200",">200"), 
               title=" ", palette ="YlOrRd")+
   tm_layout(title="Cases per 100,000", 
             title.size = 1,
             title.position=c("left","bottom"),
-            legend.position = c(0.84,0.68))
+            legend.position = c(0.83,0.67))
 
 tmap_arrange(map_test, map_case,map_test_p, map_case_p,nrow=2,ncol=2)
 ```
@@ -231,9 +231,9 @@ ggplot(testing_todate, aes(x=total_adjp, y=`Total cases per 100,000`, colour=Pro
   geom_point(size=3)+geom_text(aes(fontface=2, label=Province), hjust=-0.1,vjust=-0.5,show.legend=FALSE)+
   geom_abline(intercept = 0, slope = TCR_CAN, color="red",
                  linetype="dashed", size=1.5)+
-  annotate(geom="text", x=1300, y=650, label=paste("national test-case ratio at ", TCR_CAN*100 ,"%"),
+  annotate(geom="text", x=1500, y=650, label=paste("national test-case ratio at ", TCR_CAN*100 ,"%"),
               color="red") +
-  scale_x_continuous(limits = c(0, 6500), breaks = seq(0,6500,500))+
+  scale_x_continuous(limits = c(0, 9000), breaks = seq(0,9000,500))+
   scale_y_continuous(limits = c(0, 650), breaks = seq(0,650,25))+
   scale_color_manual(values=teamcolour)+
   labs(y="\n Total cases per 100,000 popualtion", x=" \n Total tests per 100,000 population",title = paste("Cases per 100,000 by tests per 100,000, as of ", format(Sys.time(), "%b %d, %Y %X") ))+
@@ -259,7 +259,7 @@ ggplot(testing_todate, aes(x=total_adjp, y=`Total cases per 100,000`, colour=Pro
   - **Alberta, Ontario, British Columbia and Quebec are the top 4 provinces ranked by the total number of cumulative tests with Quebec as the leading province**
   - **It seems Ontario is falling slight behind on the testing capacity per capita. **
 
-```{r echo=FALSE,message = FALSE, warning = FALSE}
+```{r echo=FALSE,message = FALSE, results='hide',warning = FALSE}
 testing_cum <- read.table("C:/Users/kuan liu/Dropbox (Personal)/STAT_consulting/Bayesiantest/Kuan-Liu-testing_can/Kuan-Liu-testing_can/testing_cumulative.txt", header=TRUE, sep="\t")
 
 # for Alex's purposes:
@@ -272,49 +272,7 @@ testing_cum$dateformat<-as.Date(testing_cum$dateformat) #this has to be update, 
 ## bar plot on testing for different Provinces/Territories
 ### turning "NA" into 0
 testing_cum[is.na(testing_cum)] <- 0
-### adding a column of ranks for each day:
-new.testing_cum <- testing_cum %>%
-  group_by(dateformat) %>%
-  # The * 1 makes it possible to have non-integer ranks while sliding
-  mutate(Rank = rank(-cumulative),
-         Value_rel = cumulative/cumulative[Rank == 1],
-         Value_lbl = paste0(" ", round(cumulative))) %>%
-  group_by(Province) %>% 
-  ungroup()
 
-p1<-ggplot(new.testing_cum, aes(x = Rank, group = Province, 
-                fill = as.factor(Province), colour =  as.factor(Province))) +
-  geom_tile(aes(y = cumulative/2,
-                height = cumulative,
-                width = 0.9), alpha = 0.8, colour =  NA) +
-  scale_color_manual(values=c(teamcolour),aesthetics = c("colour", "fill")) +
-  geom_text(aes(y = 0, label = paste(Province, " ")), vjust = 0.2, hjust = 1) +
-  geom_text(aes(y = cumulative, label = Value_lbl, hjust=0)) +
-  coord_flip(clip = "off", expand = FALSE) +
-  scale_y_continuous(labels = scales::comma) +
-  scale_x_reverse() +
-  guides(color =FALSE, fill = FALSE) +
-  theme(axis.line=element_blank(),
-        axis.text.x=element_blank(),
-        axis.text.y=element_blank(),
-        axis.ticks=element_blank(),
-        axis.title.x=element_blank(),
-        axis.title.y=element_blank(),
-        legend.position="none",
-        panel.background=element_blank(),
-        panel.border=element_blank(),
-        panel.grid.major=element_blank(),
-        panel.grid.minor=element_blank(),
-        panel.grid.major.x = element_line( size=.1, color="grey" ),
-        panel.grid.minor.x = element_line( size=.1, color="grey" ),
-        plot.title=element_text(size=25, hjust=0.5, face="bold", colour="grey", vjust=-1),
-        plot.subtitle=element_text(size=15, hjust=0.5, face="italic", color="black"),
-        plot.caption =element_text(size=8, hjust=0.5, face="italic", color="grey"),
-        plot.background=element_blank(),
-       plot.margin = margin(1,2, 1, 2, "cm")) + 
-  gganimate::transition_states(dateformat, transition_length = 8, state_length = 8) +
-  view_follow(fixed_x = TRUE)  +
-  labs(subtitle = 'Total number of cumulative tests \n by province and territory \n {closest_state}')
 
 #plot of per capita;
 testingprop_cum<-data.frame(testing_cum[,1:2],round(testing_cum[,3]/testing_cum[,4]*100000,0))
@@ -322,65 +280,115 @@ names(testingprop_cum)<-c("dateformat","Province","cumulativecapita")
 ## bar plot on testing for different Provinces/Territories
 ### turning "NA" into 0
 testingprop_cum[is.na(testingprop_cum)] <- 0
-### adding a column of ranks for each day:
-new.testingprop_cum <- testingprop_cum %>%
-  group_by(dateformat) %>%
-  # The * 1 makes it possible to have non-integer ranks while sliding
-  mutate(Rank = rank(-cumulativecapita),
-         Value_rel = cumulativecapita/cumulativecapita[Rank == 1],
-         Value_lbl = paste0(" ", round(cumulativecapita))) %>%
-  group_by(Province) %>% 
-  ungroup()
+
+# # adding a column of ranks for each day:
+# new.testing_cum <- testing_cum %>%
+#   group_by(dateformat) %>%
+#   # The * 1 makes it possible to have non-integer ranks while sliding
+#   mutate(Rank = rank(-cumulative),
+#          Value_rel = cumulative/cumulative[Rank == 1],
+#          Value_lbl = paste0(" ", round(cumulative))) %>%
+#   group_by(Province) %>%
+#   ungroup()
+# 
+# p1<-ggplot(new.testing_cum, aes(x = Rank, group = Province,
+#                 fill = as.factor(Province), colour =  as.factor(Province))) +
+#   geom_tile(aes(y = cumulative/2,
+#                 height = cumulative,
+#                 width = 0.9), alpha = 0.8, colour =  NA) +
+#   scale_color_manual(values=c(teamcolour),aesthetics = c("colour", "fill")) +
+#   geom_text(aes(y = 0, label = paste(Province, " ")), vjust = 0.2, hjust = 1) +
+#   geom_text(aes(y = cumulative, label = Value_lbl, hjust=0)) +
+#   coord_flip(clip = "off", expand = FALSE) +
+#   scale_y_continuous(labels = scales::comma) +
+#   scale_x_reverse() +
+#   guides(color =FALSE, fill = FALSE) +
+#   theme(axis.line=element_blank(),
+#         axis.text.x=element_blank(),
+#         axis.text.y=element_blank(),
+#         axis.ticks=element_blank(),
+#         axis.title.x=element_blank(),
+#         axis.title.y=element_blank(),
+#         legend.position="none",
+#         panel.background=element_blank(),
+#         panel.border=element_blank(),
+#         panel.grid.major=element_blank(),
+#         panel.grid.minor=element_blank(),
+#         panel.grid.major.x = element_line( size=.1, color="grey" ),
+#         panel.grid.minor.x = element_line( size=.1, color="grey" ),
+#         plot.title=element_text(size=25, hjust=0.5, face="bold", colour="grey", vjust=-1),
+#         plot.subtitle=element_text(size=15, hjust=0.5, face="italic", color="black"),
+#         plot.caption =element_text(size=8, hjust=0.5, face="italic", color="grey"),
+#         plot.background=element_blank(),
+#        plot.margin = margin(1,2, 1, 2, "cm")) +
+#   gganimate::transition_states(dateformat, transition_length = 1, state_length = 2) +
+#   view_follow(fixed_x = TRUE)  +
+#   labs(subtitle = 'Total number of cumulative tests \n by province and territory \n {closest_state}')
+# 
+# # adding a column of ranks for each day:
+# new.testingprop_cum <- testingprop_cum %>%
+#   group_by(dateformat) %>%
+#   # The * 1 makes it possible to have non-integer ranks while sliding
+#   mutate(Rank = rank(-cumulativecapita),
+#          Value_rel = cumulativecapita/cumulativecapita[Rank == 1],
+#          Value_lbl = paste0(" ", round(cumulativecapita))) %>%
+#   group_by(Province) %>%
+#   ungroup()
+# 
+# 
+# p2<-ggplot(new.testingprop_cum, aes(x = Rank, group = Province,
+#                 fill = as.factor(Province), colour =  as.factor(Province))) +
+#   geom_tile(aes(y = cumulativecapita/2,
+#                 height = cumulativecapita,
+#                 width = 0.9), alpha = 0.8, colour =  NA) +
+#   scale_color_manual(values=c(teamcolour),aesthetics = c("colour", "fill")) +
+#   geom_text(aes(y = 0, label = paste(Province, " ")), vjust = 0.2, hjust = 1) +
+#   geom_text(aes(y = cumulativecapita, label = Value_lbl, hjust=0)) +
+#   coord_flip(clip = "off", expand = FALSE) +
+#   scale_y_continuous(labels = scales::comma) +
+#   scale_x_reverse() +
+#   guides(color =FALSE, fill = FALSE) +
+#   theme(axis.line=element_blank(),
+#         axis.text.x=element_blank(),
+#         axis.text.y=element_blank(),
+#         axis.ticks=element_blank(),
+#         axis.title.x=element_blank(),
+#         axis.title.y=element_blank(),
+#         legend.position="none",
+#         panel.background=element_blank(),
+#         panel.border=element_blank(),
+#         panel.grid.major=element_blank(),
+#         panel.grid.minor=element_blank(),
+#         panel.grid.major.x = element_line( size=.1, color="grey" ),
+#         panel.grid.minor.x = element_line( size=.1, color="grey" ),
+#         plot.title=element_text(size=25, hjust=0.5, face="bold", colour="grey", vjust=-1),
+#         plot.subtitle=element_text(size=15, hjust=0.5, face="italic", color="black"),
+#         plot.caption =element_text(size=8, hjust=0.5, face="italic", color="grey"),
+#         plot.background=element_blank(),
+#        plot.margin = margin(1,2, 1, 2, "cm")) +
+#   gganimate::transition_states(dateformat, transition_length = 1, state_length = 2) +
+#   view_follow(fixed_x = TRUE)  +
+#   labs(subtitle = 'Total number of cumulative tests per 100,000 \n by province and territory \n {closest_state}')
 
 
-p2<-ggplot(new.testingprop_cum, aes(x = Rank, group = Province, 
-                fill = as.factor(Province), colour =  as.factor(Province))) +
-  geom_tile(aes(y = cumulativecapita/2,
-                height = cumulativecapita,
-                width = 0.9), alpha = 0.8, colour =  NA) +
-  scale_color_manual(values=c(teamcolour),aesthetics = c("colour", "fill")) +
-  geom_text(aes(y = 0, label = paste(Province, " ")), vjust = 0.2, hjust = 1) +
-  geom_text(aes(y = cumulativecapita, label = Value_lbl, hjust=0)) +
-  coord_flip(clip = "off", expand = FALSE) +
-  scale_y_continuous(labels = scales::comma) +
-  scale_x_reverse() +
-  guides(color =FALSE, fill = FALSE) +
-  theme(axis.line=element_blank(),
-        axis.text.x=element_blank(),
-        axis.text.y=element_blank(),
-        axis.ticks=element_blank(),
-        axis.title.x=element_blank(),
-        axis.title.y=element_blank(),
-        legend.position="none",
-        panel.background=element_blank(),
-        panel.border=element_blank(),
-        panel.grid.major=element_blank(),
-        panel.grid.minor=element_blank(),
-        panel.grid.major.x = element_line( size=.1, color="grey" ),
-        panel.grid.minor.x = element_line( size=.1, color="grey" ),
-        plot.title=element_text(size=25, hjust=0.5, face="bold", colour="grey", vjust=-1),
-        plot.subtitle=element_text(size=15, hjust=0.5, face="italic", color="black"),
-        plot.caption =element_text(size=8, hjust=0.5, face="italic", color="grey"),
-        plot.background=element_blank(),
-       plot.margin = margin(1,2, 1, 2, "cm")) + 
-  gganimate::transition_states(dateformat, transition_length = 8, state_length = 8) +
-  view_follow(fixed_x = TRUE)  +
-  labs(subtitle = 'Total number of cumulative tests per 100,000 \n by province and territory \n {closest_state}')
+# gganimate::animate(p1, nframes=2*length(unique(new.testing_cum$dateformat)))
+# gganimate::animate(p2, nframes=2*length(unique(new.testingprop_cum$dateformat)))
 
-p1
-p2
 ```
+
+![](cum.gif)
+![](cumprop.gif)
 
 ```{r echo=FALSE}
 
-testing_cum2<-subset(testing_cum, Province %in% c("AB","BC","MB","NB","NL","NS","ON","PE","QC","SK")& dateformat > as.Date("2020-03-31"))
+testing_cum2<-subset(testing_cum, Province %in% c("AB","BC","MB","NB","NL","NS","ON","PE","QC","SK"))
 
 p_testcum<-ggplot(testing_cum2, aes(x=dateformat, y=cumulative, colour=Province)) +
 geom_line(size = 1) + 
   geom_point() +
-  scale_y_continuous(limits = c(0, 840000), breaks = seq(0, 840000, 20000)) +
+  scale_y_continuous(limits = c(0, 1200000), breaks = seq(0, 1200000, 50000)) +
   scale_color_manual(values = teamcolour_province)+
-  scale_x_date(date_breaks="1 day",date_labels="%b %d", 
+  scale_x_date(date_breaks="7 day",date_labels="%b %d", 
                limits = c(min(testing_cum2$dateformat), max(testing_cum2$dateformat) + 0.25)) +
   labs(y="\n Total number of cumulative tests by province", x="")+
   theme(panel.background = element_rect(fill = "white", colour = "white"),
@@ -402,9 +410,9 @@ p_testcump<-ggplot(testprop_cum2, aes(x=dateformat, y=cumulative_p, colour=Provi
 geom_line(size = 1)+geom_point()+
   # geom_hline(yintercept=590, linetype="dashed", color = "black") +
   # geom_text(x=as.Date("2020-03-16"),y=510,label="Mar 28 National est.",color="black")+
-  scale_y_continuous(limits = c(0,6600), breaks = seq(0,6600,200))+
+  scale_y_continuous(limits = c(0,9000), breaks = seq(0,9000,500))+
   scale_color_manual(values=teamcolour_province)+
-  scale_x_date(date_breaks="1 day",date_labels="%b %d")+
+  scale_x_date(date_breaks="7 day",date_labels="%b %d")+
   labs(y="\n Total number of cumulative tests per 100,000 population \n by province", x="")+
   theme(panel.background = element_rect(fill = "white", colour = "white"),
         panel.grid.major = element_line(colour = "grey95"),
@@ -424,13 +432,13 @@ p_testcump
 
 ```{r echo=FALSE}
 
-testing_cum2<-subset(testing_cum, Province %in% c("NU","YT","NT") & dateformat > as.Date("2020-03-31"))
+testing_cum2<-subset(testing_cum, Province %in% c("NU","YT","NT"))
 
 p_testcumt<-ggplot(testing_cum2, aes(x=dateformat, y=cumulative, colour=Province)) +
 geom_line(size = 1)+geom_point()+
-  scale_y_continuous(limits = c(0, 2400), breaks = seq(0,2400,200))+
+  scale_y_continuous(limits = c(0, 2600), breaks = seq(0,2600,200))+
   scale_color_manual(values=teamcolour_territory)+
-  scale_x_date(date_breaks="1 day",date_labels="%b %d")+
+  scale_x_date(date_breaks="7 day",date_labels="%b %d")+
   labs(y="\n Total number of cumulative tests \n by territory", x="")+
   theme(panel.background = element_rect(fill = "white", colour = "white"),
         panel.grid.major = element_line(colour = "grey95"),
@@ -451,9 +459,9 @@ testprop_cum2<-subset(testprop_cum, Province %in% c("NU","YT","NT") & dateformat
 p_testcumpt<-ggplot(testprop_cum2, aes(x=dateformat, y=cumulative_p, colour=Province)) +
 geom_line(size = 1)+geom_point()+
   # geom_hline(yintercept=500, linetype="dashed", color = "black") +
-  scale_y_continuous(limits = c(0, 5500), breaks = seq(0,5500,500))+
+  scale_y_continuous(limits = c(0, 6000), breaks = seq(0,6000,500))+
   scale_color_manual(values=teamcolour_territory)+
-  scale_x_date(date_breaks="1 day",date_labels="%b %d")+
+  scale_x_date(date_breaks="7 day",date_labels="%b %d")+
   labs(y="\n Total number of cumulative tests \n per 100,000 population by territory", x="")+
   theme(panel.background = element_rect(fill = "white", colour = "white"),
         panel.grid.major = element_line(colour = "grey95"),
@@ -499,20 +507,21 @@ testing_cum$est_daily2<-ifelse(testing_cum$est_daily<=1 | (testing_cum$est_daily
 # testing_cum$est_daily2<-ifelse(testing_cum$est_daily<=50 & testing_cum$Province=="BC",NA, testing_cum$est_daily)
 
 #Province plot;
-testing_cum2<-subset(testing_cum, Province %in% c("AB","BC","MB","NB","NL","NS","ON","PE","QC","SK")& dateformat > as.Date("2020-03-31") & dateformat < Sys.Date())
+testing_cum2<-subset(testing_cum, Province %in% c("AB","BC","MB","NB","NL","NS","ON","PE","QC","SK") )
 
 testing_cum_top<-subset(testing_cum2, Province %in% c("AB","BC","ON","QC"))
 
 topp<-ggplot(testing_cum_top, aes(x=dateformat, y=est_daily2, colour=Province)) +
   geom_point()+
   geom_line(data=testing_cum_top[!is.na(testing_cum_top$est_daily2),],size = 1)+
-  scale_y_continuous(limits = c(0, 22000), breaks = seq(0,22000,1000))+
+  scale_y_continuous(limits = c(0, 30000), breaks = seq(0,30000,1000))+
   scale_color_manual(values=teamcolour_province[c(1,2,7,9)])+
-  scale_x_date(date_breaks="1 day",date_labels="%b %d", 
+  scale_x_date(date_breaks="7 day",date_labels="%b %d", 
                limits = c(min(testing_cum2$dateformat), max(testing_cum2$dateformat) + 0.25)) +
   geom_hline(yintercept=3000, linetype="dashed", color = "black") +
   geom_hline(yintercept=5000, linetype="dashed", color = "black") +
   geom_hline(yintercept=10000, linetype="dashed", color = "black") +
+  geom_hline(yintercept=20000, linetype="dashed", color = "black") +
   labs(y="\n Number of tests \n completed per day")+
   theme(panel.background = element_rect(fill = "white", colour = "white"),
         panel.grid.major = element_line(colour = "grey95"),
@@ -536,7 +545,7 @@ botp<-ggplot(testing_cum_bot, aes(x=dateformat, y=est_daily2, colour=Province)) 
   labs(y="\n Number of tests \n completed per day")+
   scale_y_continuous(limits = c(0, 2400), breaks = seq(0,2400,200))+
   scale_color_manual(values=teamcolour_province[c(3,4,5,6,8,10)])+
-  scale_x_date(date_breaks="1 day",date_labels="%b %d", 
+  scale_x_date(date_breaks="7 day",date_labels="%b %d", 
                limits = c(min(testing_cum2$dateformat), max(testing_cum2$dateformat) + 0.25)) +
   theme(panel.background = element_rect(fill = "white", colour = "white"),
         panel.grid.major = element_line(colour = "grey95"),
@@ -553,13 +562,13 @@ botp<-ggplot(testing_cum_bot, aes(x=dateformat, y=est_daily2, colour=Province)) 
 
 
 #Territory plot;
-testing_cumt<-subset(testing_cum, Province %in% c("NU","YT","NT") & dateformat > as.Date("2020-03-31") & dateformat < Sys.Date())
+testing_cumt<-subset(testing_cum, Province %in% c("NU","YT","NT"))
 
 terr<-ggplot(testing_cumt, aes(x=dateformat, y=est_daily2, colour=Province)) +
 geom_line(data=testing_cumt[!is.na(testing_cumt$est_daily2),],size = 1)+geom_point()+
   scale_y_continuous(limits = c(0, 300), breaks = seq(0,300,50))+
   scale_color_manual(values=teamcolour_territory)+
-  scale_x_date(date_breaks="1 day",date_labels="%b %d")+
+  scale_x_date(date_breaks="7 day",date_labels="%b %d")+
   labs(y="\n Number of tests \n completed per day", x="")+
   theme(panel.background = element_rect(fill = "white", colour = "white"),
         panel.grid.major = element_line(colour = "grey95"),
@@ -583,7 +592,7 @@ terr
 
 - **Highlights**
   - **Nunavut has no confirmed case yet.**
-  - **Quebec has the highest proportion of positive tests (11%).**
+  - **Quebec has the highest proportion of positive tests (10%).**
   - **The back log in Ontario is observed to be cleared. The proportion of pending tests in Ontario has reduced significantly, at less than 5% now comparing to the same proportion on Mar 25, 2020 at 29.4%.**
   
 ```{r echo=FALSE}
